@@ -13,10 +13,15 @@ var videoPlay = false;
 var videoLoad = false;
 var gameStart = false;
 var fontsize;
+var dark_ = false;
+var dark_2 = false;
 
 var String = new Array();
 
+var nowScenenum = 0;
+var Scenenum = 0;
 var msgcount = -1;
+var scenemove = false;
 var count = 0;
 var audio = new Array();
 
@@ -24,6 +29,7 @@ var color = 0x000000;
 var elapsed = Date.now();
 
 var view;
+var particleview;
 var particle;
 
 var filter;
@@ -80,7 +86,8 @@ stage = new PIXI.Container();
 		String = str.split(/\r\n|\r|\n/);
 		if(String[String.length - 1] == '')String.pop();
 	});
-backGround = new PIXI.Container();
+backGround = new PIXI.Container();//複数テクスチャを扱えるがParticleContainerより遅い(同時に1000以下なら使用)
+	particleview = new PIXI.ParticleContainer();//1つしかテクスチャを扱えない
 	view = new PIXI.ParticleContainer();
 				view.setProperties({
 					scale: true,
@@ -89,7 +96,13 @@ backGround = new PIXI.Container();
 					uvs: true,
 					alpha: true
 				});
-	
+				particleview.setProperties({
+					scale: true,
+					position: true,
+					rotation: true,
+					uvs: true,
+					alpha: true
+				});
 	filter = new PIXI.filters.BlurFilter();
 	filter.blur = 8;
 	
@@ -106,19 +119,26 @@ backGround = new PIXI.Container();
 })();
 function loadanimTextures()
 {
-	 var fromtexture = PIXI.Texture.fromImage('gold_anim.png');
+	 var fromtexture = PIXI.Texture.fromImage('anime_onara07.png');
 	 var Textures = [];
-	 for (var t = 0; t < 6; t++) {
-      var frame = new PIXI.Rectangle(0, 0, 40, 10*t);
-      var texture = new PIXI.Texture(fromtexture, frame);
-	  frame = null;
-	  Textures.push(texture);
-    }
-	for (var i = 0; i < 16; i++) {
+
+	 for(var y = 0;y < 8;y++)
+	 {
+		 for(var x = 0;x < 5;x++)
+		 {
+			var frame = new PIXI.Rectangle(x*192, y*192, 192, 192);
+			var texture = new PIXI.Texture(fromtexture, frame);
+			frame = null;
+			
+			Textures.push(texture);
+		 }
+	 }
+	for (var i = 0; i < 8; i++) {
         // create an explosion AnimatedSprite
         var explosion = new PIXI.extras.AnimatedSprite(Textures);
         explosion.x = Math.random() * canvas.width;
         explosion.y = Math.random() * canvas.height;
+
         explosion.anchor.set(0.5);
         explosion.rotation = Math.random() * Math.PI;
         explosion.scale.set(0.75 + Math.random() * 0.5);
@@ -126,43 +146,22 @@ function loadanimTextures()
 		explosion.animationSpeed = 0.3;
         view.addChild(explosion);
     }
+	//view.alpha = 0.8;
 }
 
 function anim_textureload()
 {
-	
-	PIXI.loader
-    .add('spritesheet', 'gold_anim.json')
-    .load(onAssetsLoaded);
-
-function onAssetsLoaded() {
-
-    // create an array to store the textures
-    var explosionTextures = [],
-        i;
-
-    for (i = 0; i < 6; i++) {
-         var texture = PIXI.Texture.fromFrame('gold_' + (i+1) + '.png');
-         explosionTextures.push(texture);
-    }
-  
-    for (i = 0; i < 16; i++) {
-        // create an explosion AnimatedSprite
-        var explosion = new PIXI.extras.AnimatedSprite(explosionTextures);
-        explosion.x = Math.random() * canvas.width;
-        explosion.y = Math.random() * canvas.height;
-        explosion.anchor.set(0.5);
-        explosion.rotation = Math.random() * Math.PI;
-        explosion.scale.set(0.75 + Math.random() * 0.5);
-        explosion.gotoAndPlay(Math.random() * 27);
-		explosion.animationSpeed = 0.3;
-        view.addChild(explosion);
-    }
-		
+	var fromtexture = PIXI.Texture.fromImage('anime_onara01.png');
 	var textures = [];
-	for (i = 0; i < 6; i++) {
-         var texture = PIXI.Texture.fromFrame('gold_' + (i+1) + '.png');
-         textures.push(texture);
+	for(var y = 0;y < 2;y++)
+	{
+		for(var x = 0;x < 5;x++)
+		{
+		var frame = new PIXI.Rectangle(x*192, y*192, 192, 192);
+		var texture = new PIXI.Texture(fromtexture, frame);
+		frame = null;
+		textures.push(texture);
+		}
     }
 	 var fireconfig = {
 	"alpha": {
@@ -174,8 +173,8 @@ function onAssetsLoaded() {
 		"end": 1
 	},
 	"color": {
-		"start": "85888d",
-		"end": "100f0c"
+		"start": "ffffff",
+		"end": "ffffff"
 	},
 	"speed": {
 		"start": 300,
@@ -191,7 +190,7 @@ function onAssetsLoaded() {
 	},
 	"lifetime": {
 		"min": 0.5,
-		"max": 1
+		"max": 0.7
 	},
 	"blendMode": "normal",
 	"frequency": 0.001,
@@ -201,23 +200,23 @@ function onAssetsLoaded() {
 		"x": 0,
 		"y": 0
 	},
-	"addAtBack": false,//ループ
+	"addAtBack": false,
 	"spawnType": "point"
 };
-	 particle = new PIXI.particles.Emitter(view, textures, fireconfig);
-	
+	 particle = new PIXI.particles.Emitter(particleview, textures, fireconfig);
 	// Center on the stage
 	 particle.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2);
 
 	 particle.emit = false;
-}
-			window.destroyEmitter = function()
+
+window.destroyEmitter = function()
 			{
 				particle.destroy();
 				particle = null;
 				window.destroyEmitter = null;
 			}
 }
+
 function Texboxs_Load()
 {
 	var Texbox = PIXI.Texture.fromImage("mesframe14_blue.png",false,PIXI.SCALE_MODES.NEAREST);
@@ -250,7 +249,7 @@ function Texboxs_Load()
 }
 function pic_lists_Load()
 {
-	var farTex = PIXI.Texture.fromImage("F-16_June_2008.jpg",false,PIXI.SCALE_MODES.NEAREST);
+	var farTex = PIXI.Texture.fromImage("beath.png",false,PIXI.SCALE_MODES.NEAREST);
 	farTex.baseTexture.addListener("loaded",function(){
 	farTex.baseTexture.removeListener("loaded");
     sprite = new PIXI.Sprite(farTex);
@@ -259,7 +258,7 @@ function pic_lists_Load()
     stage.addChild(backGround);
 	pic_list.push(sprite);
 	//
-	var farTex2 = PIXI.Texture.fromImage("kabegami.png",false,PIXI.SCALE_MODES.NEAREST);
+	var farTex2 = PIXI.Texture.fromImage("hip.jpg",false,PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded",function(){
 	farTex2.baseTexture.removeListener("loaded");
 	var sprite2 = new PIXI.Sprite(farTex2);
@@ -268,6 +267,7 @@ function pic_lists_Load()
 	
 	Texboxs_Load();
 	stage.addChild(view);
+	stage.addChild(particleview);
 	fade_Load();
 	});
 	});
@@ -303,6 +303,43 @@ function fadeIn_Out()
 		fade.alpha -= 0.01;
 		if(fade.alpha < 0)fade.alpha = 0;
 	}
+}
+function dark()
+{
+	if(blackfade.alpha < 0.5){
+		blackfade.alpha += 0.05;
+		if(blackfade.alpha > 0.5)blackfade.alpha = 0.5;
+	}
+}
+function light()
+{
+	if(blackfade.alpha > 0){
+		blackfade.alpha -= 0.05;
+		if(blackfade.alpha < 0)blackfade.alpha = 0;
+	}
+}
+function scenechange(num)
+{
+	if(nowScenenum == num)return;
+	
+	if(!dark_ && blackfade.alpha < 1){
+		blackfade.alpha += 0.01;
+		console.log(blackfade.alpha);
+		if(blackfade.alpha > 1){
+			blackfade.alpha = 1;
+			dark_ = true;
+			change_background(num);
+		}
+	}
+	if(dark_ && blackfade.alpha > 0){
+	blackfade.alpha -= 0.01;
+	if(blackfade.alpha < 0){
+		blackfade.alpha = 0;
+		nowScenenum = num;
+		dark_ = false;
+		scenemove = false;
+	}
+  }
 }
 
 function moveDisplacementfilter()
@@ -342,7 +379,12 @@ function enterFrameHandler()
 		fadeIn_Out();
 		textview();
 		Vibration();
-		
+		if(scenemove)scenechange(Scenenum);
+		else{
+		if(dark_2)dark();
+		else light();
+		}
+
 		if (particle)particle.update((time - elapsed)/1000);
 		if(displacementfilterOn)moveDisplacementfilter()
 		elapsed = time;
@@ -377,6 +419,7 @@ function audioplaying()
 			case "[sound1]":
 			if (audio[0].paused)audio[0].play();
 			color = 0xFF0000;
+
 			break;
 			case "[sound2]":
 			if (audio[1].paused)audio[1].play();
@@ -410,16 +453,20 @@ function audioplaying()
 			pic_list[0].filters = null;
 			break;
 			case "[dark]":
-			blackfade.alpha = 0.5;
+			scenemove = false;
+			dark_2 = true;
 			break;
 			case "[darkend]":
-			blackfade.alpha = 0;
+			scenemove = false;
+			dark_2 = false;
 			break;
 			case "[change1]":
-			change_background(1);
+			scenemove = true;
+			Scenenum = 1;
 			break;
 			case "[change2]":
-			change_background(0);
+			scenemove = true;
+			Scenenum = 0;
 			break;
 			case "[move]":
 			playing = false;
@@ -489,6 +536,7 @@ function clickact(e)
 		playmp4('testVideo.mp4');
 		return;
 	}
+	if(scenemove)return;
 	if(particle){
 	particle.emit = true;
 	particle.resetPositionTracking();
