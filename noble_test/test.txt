@@ -16,6 +16,8 @@
 光る。
 [vib]
 振動します。
+[vibend]
+止めます。
 [blur]
 ぼやけます。
 [displace]
