@@ -10,6 +10,7 @@ var horizont = false;
 var videoSprite;
 var videoSource;
 var videoPlay = false;
+var videoLoad = false;
 var gameStart = false;
 var fontsize;
 
@@ -204,9 +205,11 @@ function onAssetsLoaded() {
 	"spawnType": "point"
 };
 	 particle = new PIXI.particles.Emitter(view, textures, fireconfig);
-
+	
 	// Center on the stage
 	 particle.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2);
+
+	 particle.emit = false;
 }
 			window.destroyEmitter = function()
 			{
@@ -314,6 +317,7 @@ function videostop()
 	stage.removeChild(videoSprite);
 	videoSprite.destroy();
 	videoPlay = false;
+	videoLoad = false;
 	playing = true;
 }
 function Vibration()
@@ -367,7 +371,6 @@ function audioplaying()
 {
 	var Msg = String[msgcount];
 	if(Msg.slice(0,1) == "[" && Msg.slice(-1) == "]"){
-		vibration = false;
 		displacementfilterOn = false;
 		switch(Msg)
 		{
@@ -393,6 +396,9 @@ function audioplaying()
 			case "[vib]":
 			vibration = true;
 			break;
+			case "[vibend]":
+			vibration = false;
+			break;
 			case "[blur]":
 			pic_list[0].filters = [filter];
 			break;
@@ -417,7 +423,7 @@ function audioplaying()
 			break;
 			case "[move]":
 			playing = false;
-			playmp4('testVideo.mp4');
+			videoLoad = true;
 			break;
 			default:
 			break;
@@ -467,7 +473,7 @@ videoPlay = true;
 });
 }
 function clickact(e)
-{	
+{
 	if(!gameStart){
 		gameStart = true;
 		audioLoad();
@@ -477,8 +483,12 @@ function clickact(e)
 	
 	if(videoPlay){
 		videoSource.currentTime+=8.0;
+		return;
+	}else if(!playing && videoLoad) {
+		videoLoad = false;
+		playmp4('testVideo.mp4');
+		return;
 	}
-	
 	if(particle){
 	particle.emit = true;
 	particle.resetPositionTracking();
