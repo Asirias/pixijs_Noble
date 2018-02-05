@@ -324,7 +324,6 @@ function scenechange(num)
 	
 	if(!dark_ && blackfade.alpha < 1){
 		blackfade.alpha += 0.01;
-		console.log(blackfade.alpha);
 		if(blackfade.alpha > 1){
 			blackfade.alpha = 1;
 			dark_ = true;
