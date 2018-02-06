@@ -647,7 +647,7 @@ function BodyOnLoad() {
 				zoomin(centor_posX,centor_posY,1.1);
             }
             else if(area_bar>0){//縮小する
-				zoomin(ccentor_posX,centor_posY,0.9);
+				zoomin(centor_posX,centor_posY,0.9);
             }
         }
 	  }
