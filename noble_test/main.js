@@ -20,7 +20,7 @@ var String = new Array();
 
 var nowScenenum = 0;
 var Scenenum = 0;
-var msgcount = -1;
+var msgcount = 0;
 var scenemove = false;
 var count = 0;
 var audio = new Array();
@@ -41,9 +41,13 @@ var counter2 = 0;
 var vibration = false;
 
 var backGround;
-
+var textArea;
 var pic_list = new Array();
-(function initLoad()
+
+function getRandomInt(min, max) {
+  return Math.floor( Math.random() * (max - min + 1) ) + min;
+}
+function navi()
 {
 	var ua = navigator.userAgent;
     if(ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0){
@@ -58,35 +62,21 @@ var pic_list = new Array();
 	canvas.onmousedown = function( e ) {
 		clickact(e);
 	};
-    }
-	
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-console.log(canvas.width+"::"+canvas.height);
-		// 画面回転時に向きをチェック
-window.addEventListener('resize', checkOrientation, false);
-
-stage = new PIXI.Container();
-        renderer = PIXI.autoDetectRenderer(
-        canvas.width,
-        canvas.height,
-        {view: canvas},false,true
-    );
-	var setumei = new PIXI.Text("画面をタッチしてください",{fontFamily:'Arial', fontSize:'32pt',fontWeight:'bold', fill:'#FFFFFF'});
-		setumei.style.align = 'center';
-		setumei.x = canvas.width/2 - 318;
-		setumei.y = canvas.height/2 - 24;
-		stage.addChild(setumei);
-		//Render the stage
-    this.renderer.render(this.stage);
-	stage.removeChild(setumei);
-	
+  }
+}
+function txtLoad()
+{
 	$.get("./test.txt", function(data){
-		var str = data;
-		String = str.split(/\r\n|\r|\n/);
-		if(String[String.length - 1] == '')String.pop();
+	var str = data;
+	String = str.split(/\r\n|\r|\n/);
+	if(String[String.length - 1] == '')String.pop();
 	});
-backGround = new PIXI.Container();//複数テクスチャを扱えるがParticleContainerより遅い(同時に1000以下なら使用)
+}
+function ContainerCreate()
+{
+	stage = new PIXI.Container();
+	backGround = new PIXI.Container();//複数テクスチャを扱えるがParticleContainerより遅い(同時に1000以下なら使用)
+	textArea = new PIXI.Container();
 	particleview = new PIXI.ParticleContainer();//1つしかテクスチャを扱えない
 	view = new PIXI.ParticleContainer();
 				view.setProperties({
@@ -103,23 +93,56 @@ backGround = new PIXI.Container();//複数テクスチャを扱えるがParticle
 					uvs: true,
 					alpha: true
 				});
+}
+function filterCreate()
+{
 	filter = new PIXI.filters.BlurFilter();
 	filter.blur = 8;
 	
-	  map = PIXI.Sprite.fromImage("map.png");
-  stage.addChild(map);
-  displacementfilter = new PIXI.filters.DisplacementFilter(map);
-  displacementfilter.scale.x = 32;
-  displacementfilter.scale.y = 32;
+	map = PIXI.Sprite.fromImage("map.png",true);
+    stage.addChild(map);
+    displacementfilter = new PIXI.filters.DisplacementFilter(map);
+    displacementfilter.scale.x = 32;
+    displacementfilter.scale.y = 32;
   
   if (!displacementfilter) {
   alert("NOdisplacementfilter");
   }
   displacementfilterOn = false;
+}
+(function initLoad()
+{
+navi();
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+		// 画面回転時に向きをチェック
+        renderer = PIXI.autoDetectRenderer(
+        canvas.width,
+        canvas.height,
+        {
+			preserveDrawingBuffer: true,
+			view: canvas
+		},false,true);
+
+	var setumei = new PIXI.Text("画面をタッチしてください",{fontFamily:'Arial', fontSize:'8pt',fontWeight:'bold', fill:'#FFFFFF'});
+		setumei.x = canvas.width/2 - 110;
+		setumei.y = canvas.height/2;
+		setumei.style.fontSize = 16;
+			
+	txtLoad();
+	ContainerCreate();
+	filterCreate();
+
+	stage.addChild(setumei);
+	//Render the stage
+    this.renderer.render(this.stage);
+	stage.removeChild(setumei);
 })();
 function loadanimTextures()
 {
-	 var fromtexture = PIXI.Texture.fromImage('anime_onara07.png');
+	 var fromtexture = PIXI.Texture.fromImage('anime_onara07.png',true);
 	 var Textures = [];
 
 	 for(var y = 0;y < 8;y++)
@@ -129,7 +152,6 @@ function loadanimTextures()
 			var frame = new PIXI.Rectangle(x*192, y*192, 192, 192);
 			var texture = new PIXI.Texture(fromtexture, frame);
 			frame = null;
-			
 			Textures.push(texture);
 		 }
 	 }
@@ -151,7 +173,7 @@ function loadanimTextures()
 
 function anim_textureload()
 {
-	var fromtexture = PIXI.Texture.fromImage('anime_onara01.png');
+	var fromtexture = PIXI.Texture.fromImage('anime_onara01.png',true);
 	var textures = [];
 	for(var y = 0;y < 2;y++)
 	{
@@ -217,15 +239,15 @@ window.destroyEmitter = function()
 			}
 }
 
-function Texboxs_Load()
+function Texboxs_Load(wr,hr)
 {
-	var Texbox = PIXI.Texture.fromImage("mesframe14_blue.png",false,PIXI.SCALE_MODES.NEAREST);
+	var Texbox = PIXI.Texture.fromImage("mesframe14_blue.png",true,PIXI.SCALE_MODES.NEAREST);
 	Texbox.baseTexture.addListener("loaded",function(){
 	var Texboxsprite = new PIXI.Sprite(Texbox);
 	Texboxsprite.alpha = 0.5;
-	Texboxsprite.x = (canvas.width / 2) - (Texboxsprite.width / 2);
-	Texboxsprite.y = canvas.height - Texboxsprite.height;
-	stage.addChild(Texboxsprite);
+	Texboxsprite.x = 0;
+	Texboxsprite.y = 0;
+	textArea.addChild(Texboxsprite);
 	
 	maintext = new PIXI.Text("",{fontFamily:'Arial', fontSize:'16pt',fontWeight:'bold', fill:'#FF0000'});
 	fontsize = 16;
@@ -234,7 +256,7 @@ function Texboxs_Load()
 	//maintext.style.wordWrap = true;
 	maintext.x = Texboxsprite.x + 24;
 	maintext.y = Texboxsprite.y + 64;
-	stage.addChild(maintext);
+	textArea.addChild(maintext);
 	
 	nametext = new PIXI.Text("POWERS",{fontFamily:'Arial', fontSize:'32pt',fontWeight:'bold', fill:'#000000'});
 	nametext.style.align = 'center';
@@ -242,14 +264,18 @@ function Texboxs_Load()
 	nametext.x = Texboxsprite.x + 24 * 2;
 	nametext.y = Texboxsprite.y + 16;
 	nametext.text = "POWERS";
-	stage.addChild(nametext);
-	
+	textArea.addChild(nametext);
+
+	textArea.scale.set(wr,hr);
+	textArea.x = (canvas.width / 2) - (Texboxsprite.width / 2)*wr;
+	textArea.y = canvas.height - Texboxsprite.height*hr;
 	playing = true;
 	});
 }
 function pic_lists_Load()
 {
-	var farTex = PIXI.Texture.fromImage("beath.png",false,PIXI.SCALE_MODES.NEAREST);
+	//beath.jpg
+	var farTex = PIXI.Texture.fromImage("hip.jpg",true,PIXI.SCALE_MODES.NEAREST);
 	farTex.baseTexture.addListener("loaded",function(){
 	farTex.baseTexture.removeListener("loaded");
     sprite = new PIXI.Sprite(farTex);
@@ -257,18 +283,29 @@ function pic_lists_Load()
 	backGround.addChild(sprite);
     stage.addChild(backGround);
 	pic_list.push(sprite);
-	//
-	var farTex2 = PIXI.Texture.fromImage("hip.jpg",false,PIXI.SCALE_MODES.NEAREST);
+	//hip.jpg
+	var farTex2 = PIXI.Texture.fromImage("beath.jpg",true,PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded",function(){
 	farTex2.baseTexture.removeListener("loaded");
 	var sprite2 = new PIXI.Sprite(farTex2);
 	sprite2.scale.set(canvas.width/farTex2.width,canvas.height/farTex2.height);
 	pic_list.push(sprite2);
 	
-	Texboxs_Load();
+	
+	var ua = navigator.userAgent;
+    if(ua.indexOf('iPhone') > 0 || 
+	ua.indexOf('iPod') > 0 || 
+	ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)
+	{
+		Texboxs_Load(0.5,0.5);
+	}
+	else Texboxs_Load(1.0,1.0);
+
 	stage.addChild(view);
 	stage.addChild(particleview);
+	stage.addChild(textArea);	
 	fade_Load();
+	
 	});
 	});
 }
@@ -295,6 +332,7 @@ function Init()
 	pic_lists_Load();
 	anim_textureload();
 	loadanimTextures();
+	BodyOnLoad();
 }
 
 function fadeIn_Out()
@@ -358,10 +396,20 @@ function videostop()
 }
 function Vibration()
 {
-	if(vibration){
+	if(!vibration)return;
 	counter2++;
 	sprite.x = Math.cos(counter2)*4.0;
-	}else if(sprite.x != 0){sprite.x = 0;counter2 = 0;}
+	if(sprite.x != 0){sprite.x = 0;counter2 = 0;}
+}
+function zoomin(x,y,bairitu)
+{
+	if(sprite){
+	sprite.scale.x *= bairitu;
+	sprite.scale.y *= bairitu;
+	
+	sprite.x = - sprite.width / 2.0 + x;
+	sprite.y = - sprite.height / 2.0 + y;
+	}
 }
 function enterFrameHandler()
 {
@@ -378,6 +426,7 @@ function enterFrameHandler()
 		fadeIn_Out();
 		textview();
 		Vibration();
+		
 		if(scenemove)scenechange(Scenenum);
 		else{
 		if(dark_2)dark();
@@ -411,14 +460,13 @@ function change_background(num)
 function audioplaying()
 {
 	var Msg = String[msgcount];
-	if(Msg.slice(0,1) == "[" && Msg.slice(-1) == "]"){
+	if(Msg.charAt(0) == "[" && Msg.slice(-1) == "]"){
 		displacementfilterOn = false;
 		switch(Msg)
 		{
 			case "[sound1]":
 			if (audio[0].paused)audio[0].play();
 			color = 0xFF0000;
-
 			break;
 			case "[sound2]":
 			if (audio[1].paused)audio[1].play();
@@ -479,19 +527,11 @@ function audioplaying()
 }
 function textview()
 {
-	color = 0x000000;
-	audioplaying();
-	if(count == 0){
-		maintext.style.fill = color;
-	}
 	if(count <= String[msgcount].length){
 	// テキストフィールドにデータを渡す処理
 	maintext.text = String[msgcount].substring(0, count);
 	count++;
 	}
-}
-function getRandomInt(min, max) {
-  return Math.floor( Math.random() * (max - min + 1) ) + min;
 }
 function chack_functions(source)
 {
@@ -518,6 +558,15 @@ stage.addChild(videoSprite);
 videoPlay = true;
 });
 }
+function Next()
+{
+	color = 0x000000;
+	audioplaying();
+	if(count == 0){
+		if(maintext)
+		maintext.style.fill = color;
+	}
+}
 function clickact(e)
 {
 	if(!gameStart){
@@ -525,15 +574,17 @@ function clickact(e)
 		audioLoad();
 		Init();
 		this.enterFrameHandler();
-	}
-	
+	}	
 	if(videoPlay){
 		videoSource.currentTime+=8.0;
 		return;
-	}else if(!playing && videoLoad) {
+	}else if(!playing) {
+		Next();
+		if(videoLoad){
 		videoLoad = false;
 		playmp4('testVideo.mp4');
 		return;
+		}
 	}
 	if(scenemove)return;
 	if(particle){
@@ -544,13 +595,78 @@ function clickact(e)
 	count = 0;
 	if(msgcount < String.length)msgcount++;
 	if(msgcount == String.length)msgcount = 0;
-}
+	Next();
+	//
 
-function checkOrientation() {
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+}
+function BodyOnLoad() {
+	var dragging = false;
+    var touchstart_bar = 0;
+    var touchmove_bar = 0;
+    var counter = 0;
+	
+    //タッチの場合
+    canvas.addEventListener('touchstart',function(e){
+        touchstart_bar = 0;
+        touchmove_bar = 0;
+		dragging = true;
+        //2本指だったらAndroidではgesturestartは使えない
+        if(e.touches.length > 1){
+            //絶対値を取得
+            var w_abs_start = Math.abs(e.touches[1].pageX - e.touches[0].pageX);
+            var h_abs_start = Math.abs(e.touches[1].pageY - e.touches[0].pageY);
+            //はじめに2本指タッチした時の面積
+            touchstart_bar = w_abs_start*h_abs_start;
+        }
+    },false);
+
+    //ムーブの場合
+    canvas.addEventListener('touchmove', function(e) {
+	    counter++;
+	    if(counter % 4 == 0){
+		    counter = 0;
+		    var pagex = e.touches[0].pageX;
+		    var pagey = e.touches[0].pageY;
+
+        //2本指だったらAndroidではgesturestartは使えない
+        if(e.touches.length > 1){
+			var pagex2 = e.touches[1].pageX;
+		    var pagey2 = e.touches[1].pageY;
+			
+			var centor_posX = (pagex + pagex2) / 2.0;
+			var centor_posY = (pagey + pagey2) / 2.0;
+			
+            //絶対値を取得
+            var w_abs_move = Math.abs(pagex2 - pagex);
+            var h_abs_move = Math.abs(pagey2 - pagey);
+            //ムーブした時の面積
+            touchmove_bar = w_abs_move*h_abs_move;
+            //はじめに2タッチ面積からムーブした時の面積を引く
+            var area_bar = touchstart_bar-touchmove_bar;
+            if(area_bar<0){//拡大する
+				zoomin(centor_posX,centor_posY,1.1);
+            }
+            else if(area_bar>0){//縮小する
+				zoomin(ccentor_posX,centor_posY,0.9);
+            }
+        }
+	  }
+    });
+canvas.addEventListener('touchend',function(event){
+		  dragging = false;
+},false);
+}
+function capture () {
+	var canvass = window.document.getElementById("canvas");
+	var imgUrl = canvass.toDataURL("image/png");
+	imgUrl = imgUrl.replace("image/png", "image/octet-stream");
+	 window.open(imgUrl, 'save');
+}
+$(window).on('orientationchange resize', function() {
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
 	if(renderer){
 	renderer.width = canvas.width;
 	renderer.height = canvas.height;
 	}
-}
+});
