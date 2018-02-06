@@ -603,8 +603,7 @@ function BodyOnLoad() {
 	var dragging = false;
     var touchstart_bar = 0;
     var touchmove_bar = 0;
-    var counter = 0;
-	
+
     //タッチの場合
     canvas.addEventListener('touchstart',function(e){
         touchstart_bar = 0;
@@ -622,9 +621,6 @@ function BodyOnLoad() {
 
     //ムーブの場合
     canvas.addEventListener('touchmove', function(e) {
-	    counter++;
-	    if(counter % 4 == 0){
-		    counter = 0;
 		    var pagex = e.touches[0].pageX;
 		    var pagey = e.touches[0].pageY;
 
@@ -644,19 +640,18 @@ function BodyOnLoad() {
             //はじめに2タッチ面積からムーブした時の面積を引く
             var area_bar = touchstart_bar-touchmove_bar;
             if(area_bar<0){//拡大する
-				zoomin(centor_posX,centor_posY,1.1);
+				zoomin(centor_posX,centor_posY,1.01);
             }
             else if(area_bar>0){//縮小する
-				zoomin(centor_posX,centor_posY,0.9);
+				zoomin(centor_posX,centor_posY,0.99);
             }
         }
-	  }
     });
 canvas.addEventListener('touchend',function(event){
 		  dragging = false;
 },false);
 }
-function capture () {
+function capture() {
 	var canvass = window.document.getElementById("canvas");
 	var imgUrl = canvass.toDataURL("image/png");
 	imgUrl = imgUrl.replace("image/png", "image/octet-stream");
