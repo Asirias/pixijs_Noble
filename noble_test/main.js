@@ -10,7 +10,6 @@ var horizont = false;
 var videoSprite;
 var videoSource;
 var videoPlay = false;
-var videoLoad = false;
 var gameStart = false;
 var fontsize;
 var dark_ = false;
@@ -275,7 +274,7 @@ function Texboxs_Load(wr,hr)
 function pic_lists_Load()
 {
 	//beath.jpg
-	var farTex = PIXI.Texture.fromImage("hip.jpg",true,PIXI.SCALE_MODES.NEAREST);
+	var farTex = PIXI.Texture.fromImage("beath.jpg",true,PIXI.SCALE_MODES.NEAREST);
 	farTex.baseTexture.addListener("loaded",function(){
 	farTex.baseTexture.removeListener("loaded");
     sprite = new PIXI.Sprite(farTex);
@@ -284,7 +283,7 @@ function pic_lists_Load()
     stage.addChild(backGround);
 	pic_list.push(sprite);
 	//hip.jpg
-	var farTex2 = PIXI.Texture.fromImage("beath.jpg",true,PIXI.SCALE_MODES.NEAREST);
+	var farTex2 = PIXI.Texture.fromImage("hip.jpg",true,PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded",function(){
 	farTex2.baseTexture.removeListener("loaded");
 	var sprite2 = new PIXI.Sprite(farTex2);
@@ -396,10 +395,10 @@ function videostop()
 }
 function Vibration()
 {
-	if(!vibration)return;
+	if(vibration){
 	counter2++;
 	sprite.x = Math.cos(counter2)*4.0;
-	if(sprite.x != 0){sprite.x = 0;counter2 = 0;}
+	}else if(sprite.x != 0){sprite.x = 0;counter2 = 0;}
 }
 function zoomin(x,y,bairitu)
 {
@@ -456,6 +455,11 @@ function change_background(num)
 	backGround.removeChild(sprite);
 	sprite = pic_list[num];
 	backGround.addChild(sprite);
+}
+function mescount()
+{
+	if(msgcount < String.length)msgcount++;
+	if(msgcount == String.length)msgcount = 0;
 }
 function audioplaying()
 {
@@ -517,7 +521,7 @@ function audioplaying()
 			break;
 			case "[move]":
 			playing = false;
-			videoLoad = true;
+			playmp4('testVideo.mp4');
 			break;
 			default:
 			break;
@@ -580,11 +584,6 @@ function clickact(e)
 		return;
 	}else if(!playing) {
 		Next();
-		if(videoLoad){
-		videoLoad = false;
-		playmp4('testVideo.mp4');
-		return;
-		}
 	}
 	if(scenemove)return;
 	if(particle){
@@ -593,22 +592,17 @@ function clickact(e)
 	particle.updateOwnerPos(e.pageX, e.pageY);
 	}
 	count = 0;
-	if(msgcount < String.length)msgcount++;
-	if(msgcount == String.length)msgcount = 0;
+	mescount();
 	Next();
 	//
 
 }
 function BodyOnLoad() {
-	var dragging = false;
-    var touchstart_bar = 0;
-    var touchmove_bar = 0;
 
+    var touchstart_bar = 0;
     //タッチの場合
     canvas.addEventListener('touchstart',function(e){
         touchstart_bar = 0;
-        touchmove_bar = 0;
-		dragging = true;
         //2本指だったらAndroidではgesturestartは使えない
         if(e.touches.length > 1){
             //絶対値を取得
@@ -636,9 +630,10 @@ function BodyOnLoad() {
             var w_abs_move = Math.abs(pagex2 - pagex);
             var h_abs_move = Math.abs(pagey2 - pagey);
             //ムーブした時の面積
-            touchmove_bar = w_abs_move*h_abs_move;
+           var touchmove_bar = w_abs_move*h_abs_move;
             //はじめに2タッチ面積からムーブした時の面積を引く
             var area_bar = touchstart_bar-touchmove_bar;
+			touchstart_bar = touchmove_bar;
             if(area_bar<0){//拡大する
 				zoomin(centor_posX,centor_posY,1.01);
             }
@@ -647,9 +642,6 @@ function BodyOnLoad() {
             }
         }
     });
-canvas.addEventListener('touchend',function(event){
-		  dragging = false;
-},false);
 }
 function capture() {
 	var canvass = window.document.getElementById("canvas");
