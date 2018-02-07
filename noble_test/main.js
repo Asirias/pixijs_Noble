@@ -110,19 +110,18 @@ function filterCreate()
   }
   displacementfilterOn = false;
 }
-
-
 function deviceMotion(text_)
 {
 	var counter = 0;
+	var value = 0;
 	window.ondevicemotion = function(event) {
-	if(counter % 2 == 0){
+	if(counter % 4 == 0){
 	var accel = event.acceleration;
-	text_.text = 
-	accel.x * accel.x +
+	value = accel.x * accel.x +
 	accel.y * accel.y +
-	accel.z * accel.z;
+	accel.z * accel.z;	
 	}
+	text_.text = value;
 	counter++;
   };
 }
