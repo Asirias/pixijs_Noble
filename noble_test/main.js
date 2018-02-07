@@ -380,7 +380,7 @@ function scenechange(num)
 
 function moveDisplacementfilter()
 {
-	counter += 0.5;
+    counter += 0.5;
     map.position.x = counter;
     map.position.y = counter;
 }
@@ -398,7 +398,7 @@ function Vibration()
 	if(vibration){
 	counter2++;
 	sprite.x = Math.cos(counter2)*4.0;
-	}else if(sprite.x != 0){sprite.x = 0;counter2 = 0;}
+	}else if(counter2 != 0){sprite.x = 0;counter2 = 0;}
 }
 function zoomin(x,y,bairitu)
 {
