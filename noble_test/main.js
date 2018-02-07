@@ -171,7 +171,7 @@ function loadanimTextures()
 			Textures.push(texture);
 		 }
 	 }
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < 2; i++) {
         // create an explosion AnimatedSprite
         var explosion = new PIXI.extras.AnimatedSprite(Textures);
         explosion.x = Math.random() * canvas.width;
