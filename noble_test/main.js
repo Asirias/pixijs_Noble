@@ -109,6 +109,15 @@ function filterCreate()
   }
   displacementfilterOn = false;
 }
+function deviceMotion(text_)
+{
+  window.ondevicemotion = function(event) {
+  text_.text = 
+  Math.abs(event.acceleration.x) +
+  Math.abs(event.acceleration.y) +
+  Math.abs(event.acceleration.z);
+  };
+}
 (function initLoad()
 {
 navi();
@@ -129,12 +138,13 @@ canvas.height = window.innerHeight;
 		setumei.x = canvas.width/2 - 110;
 		setumei.y = canvas.height/2;
 		setumei.style.fontSize = 16;
-			
+		
 	txtLoad();
 	ContainerCreate();
 	filterCreate();
 
 	stage.addChild(setumei);
+	
 	//Render the stage
     this.renderer.render(this.stage);
 	stage.removeChild(setumei);
@@ -188,7 +198,6 @@ function anim_textureload()
 	particle = new PIXI.particles.Emitter(particleview, textures, config);
 	// Center on the stage
 	particle.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2);
-
 	particle.emit = false;
 
 		window.destroyEmitter = function()
@@ -266,7 +275,9 @@ function pic_lists_Load()
 	stage.addChild(particleview);
 	stage.addChild(textArea);	
 	fade_Load();
-	
+	var devm = new PIXI.Text("",{fontFamily:'Arial', fontSize:'8pt',fontWeight:'bold', fill:'#FFFFFF'});
+	deviceMotion(devm);
+	stage.addChild(devm);
 	});
 	});
 }
@@ -597,10 +608,10 @@ function BodyOnLoad() {
             var area_bar = touchstart_bar-touchmove_bar;
 			touchstart_bar = touchmove_bar;
             if(area_bar<0){//拡大する
-				zoomin(centor_posX,centor_posY,1.01);
+				zoomin(centor_posX,centor_posY,1.02);
             }
             else if(area_bar>0){//縮小する
-				zoomin(centor_posX,centor_posY,0.99);
+				zoomin(centor_posX,centor_posY,0.98);
             }
         }
     });
