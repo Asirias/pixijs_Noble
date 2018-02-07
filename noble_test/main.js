@@ -14,6 +14,7 @@ var gameStart = false;
 var fontsize;
 var dark_ = false;
 var dark_2 = false;
+var stats;
 
 var String = new Array();
 
@@ -109,6 +110,8 @@ function filterCreate()
   }
   displacementfilterOn = false;
 }
+
+
 function deviceMotion(text_)
 {
 	var counter = 0;
@@ -280,6 +283,11 @@ function pic_lists_Load()
 	stage.addChild(particleview);
 	stage.addChild(textArea);	
 	fade_Load();
+	
+	stats = new Stats();
+	stats.setMode(0);
+	document.body.appendChild(stats.domElement);
+	
 	var devm = new PIXI.Text("",{fontFamily:'Arial', fontSize:'8pt',fontWeight:'bold', fill:'#FFFFFF'});
 	deviceMotion(devm);
 	stage.addChild(devm);
@@ -400,6 +408,8 @@ function enterFrameHandler()
 		}
 		if(playing){
 		var time = Date.now();
+		if(stats)stats.update();
+		
 		fadeIn_Out();
 		textview();
 		Vibration();
