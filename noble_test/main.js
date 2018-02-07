@@ -288,7 +288,8 @@ function pic_lists_Load()
 	stats.setMode(0);
 	document.body.appendChild(stats.domElement);
 	
-	var devm = new PIXI.Text("",{fontFamily:'Arial', fontSize:'8pt',fontWeight:'bold', fill:'#FFFFFF'});
+	var devm = new PIXI.Text("no",{fontFamily:'Arial', fontSize:'8pt',fontWeight:'bold', fill:'#FFFFFF'});
+	devm.y = canvas.height - 16;
 	deviceMotion(devm);
 	stage.addChild(devm);
 	});
