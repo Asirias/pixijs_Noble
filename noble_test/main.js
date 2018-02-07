@@ -184,58 +184,21 @@ function anim_textureload()
 		textures.push(texture);
 		}
     }
-	 var fireconfig = {
-	"alpha": {
-		"start": 0.45,
-		"end": 0
-	},
-	"scale": {
-		"start": 0.1,
-		"end": 1
-	},
-	"color": {
-		"start": "ffffff",
-		"end": "ffffff"
-	},
-	"speed": {
-		"start": 300,
-		"end": 700
-	},
-	"startRotation": {
-		"min": 250,
-		"max": 290
-	},
-	"rotationSpeed": {
-		"min": 0,
-		"max": 0
-	},
-	"lifetime": {
-		"min": 0.5,
-		"max": 0.7
-	},
-	"blendMode": "normal",
-	"frequency": 0.001,
-	"emitterLifetime": 0.31,
-	"maxParticles": 256,
-	"pos": {
-		"x": 0,
-		"y": 0
-	},
-	"addAtBack": false,
-	"spawnType": "point"
-};
-	 particle = new PIXI.particles.Emitter(particleview, textures, fireconfig);
+	$.getJSON("smoke.json", function(config){
+	particle = new PIXI.particles.Emitter(particleview, textures, config);
 	// Center on the stage
-	 particle.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2);
+	particle.updateOwnerPos(window.innerWidth / 2, window.innerHeight / 2);
 
-	 particle.emit = false;
+	particle.emit = false;
 
-window.destroyEmitter = function()
-			{
-				particle.destroy();
-				particle = null;
-				window.destroyEmitter = null;
-			}
+		window.destroyEmitter = function()
+		{
+			particle.destroy();
+			particle = null;
+			window.destroyEmitter = null;
+		}
+});
+
 }
 
 function Texboxs_Load(wr,hr)
@@ -289,7 +252,6 @@ function pic_lists_Load()
 	var sprite2 = new PIXI.Sprite(farTex2);
 	sprite2.scale.set(canvas.width/farTex2.width,canvas.height/farTex2.height);
 	pic_list.push(sprite2);
-	
 	
 	var ua = navigator.userAgent;
     if(ua.indexOf('iPhone') > 0 || 
@@ -380,7 +342,7 @@ function scenechange(num)
 
 function moveDisplacementfilter()
 {
-    counter += 0.5;
+	counter += 0.5;
     map.position.x = counter;
     map.position.y = counter;
 }
