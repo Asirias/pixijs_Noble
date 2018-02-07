@@ -111,11 +111,16 @@ function filterCreate()
 }
 function deviceMotion(text_)
 {
-  window.ondevicemotion = function(event) {
-  text_.text = 
-  Math.abs(event.acceleration.x) +
-  Math.abs(event.acceleration.y) +
-  Math.abs(event.acceleration.z);
+	var counter = 0;
+	window.ondevicemotion = function(event) {
+	if(counter % 2 == 0){
+	var accel = event.acceleration;
+	text_.text = 
+	accel.x * accel.x +
+	accel.y * accel.y +
+	accel.z * accel.z;
+	}
+	counter++;
   };
 }
 (function initLoad()
