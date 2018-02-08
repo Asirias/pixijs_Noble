@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>WebGLTest</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+	<body>
+    <div id="container">
+	<canvas id="canvas" oncontextmenu="event.preventDefault()">
+	</canvas>
+	</div>
+
+	<div id="menu">
+	json<input id="jfile" name="jfile" accept="*" type="file" /><br>
+	画像<input id="ufile" name="ufile" accept="image/*" type="file" /><br>
+	<a id="download" href="#" download="data.json" onclick="jsonSave()">SAVE</a>
+	<input type="button" value="load" onclick="jsonLoad()">
+	<input type="button" value="cap" onclick="capture()">
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
+	<script src="dist/pixi-particles.js"></script>
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script src="stats.min.js"></script>
+	<script src="editor.js"></script>
+	</body>
+</html>
