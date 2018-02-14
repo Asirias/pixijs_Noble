@@ -20,14 +20,7 @@
 
 </body>
 <script>
-var textarea = document.getElementById("message");
-var cookie_l = GetCookie('data');
-if(cookie_l != 'vis'){
-var expire = new Date();
-expire.setTime( expire.getTime() + 1000 * 3600 * 24 );
-document.cookie = 'data=vis; expires=' + expire.toUTCString();
-window.location.href = 'https://asirias.github.io/pixijs_Noble/noble_test/memo.html';
-}
+
 function GetCookie( name )
 {
     var result = null;
@@ -52,7 +45,14 @@ function GetCookie( name )
 
     return result;
 }
-
+var textarea = document.getElementById("message");
+var cookie_l = GetCookie('data');
+if(cookie_l != 'vis'){
+var expire = new Date();
+expire.setTime( expire.getTime() + 1000 * 3600 * 24 );
+document.cookie = 'data=vis; expires=' + expire.toUTCString();
+window.location.href = 'https://smellyfarts.blog.fc2.com/';
+}
 /*var List = {
 "sound1":"[sound1]",
 "sound2":"[sound1]",
