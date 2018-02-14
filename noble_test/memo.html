@@ -3,11 +3,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
-	<script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+<script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+<script src='test.js'></script>
 <title>memo</title>
 <body>
 <div id ="res"></div>
-
 <TEXTAREA id="message" COLS=50 ROWS=5 WRAP="virtual"></TEXTAREA><br>
 <input type="button" value="save" onclick="getValue()">
 <input type="button" value="tagAdd" onclick="kisd('Audio')">
@@ -17,85 +17,6 @@
 テスト中=><input type="button" value="JsonTest" onclick="urljump('https://asirias.github.io/pixijs_Noble/noble_test/editor.html')"><br>
 制作者 =><a href="https://github.com/pixijs/pixi-particles-editor">andrewstart</a>
 <input type="button" value="ParticlesEditor" onclick="urljump('http://pixijs.io/pixi-particles-editor/#pixieDust')"><br>
-
 </body>
-<script>
-
-function GetCookie( name )
-{
-    var result = null;
-
-    var cookieName = name + '=';
-    var allcookies = document.cookie;
-
-    var position = allcookies.indexOf( cookieName );
-    if( position != -1 )
-    {
-        var startIndex = position + cookieName.length;
-
-        var endIndex = allcookies.indexOf( ';', startIndex );
-        if( endIndex == -1 )
-        {
-            endIndex = allcookies.length;
-        }
-
-        result = decodeURIComponent(
-            allcookies.substring( startIndex, endIndex ) );
-    }
-
-    return result;
-}
-var textarea = document.getElementById("message");
-var cookie_l = GetCookie('data');
-if(cookie_l != 'vis'){
-var expire = new Date();
-expire.setTime( expire.getTime() + 1000 * 3600 * 24 );
-document.cookie = 'data=vis; expires=' + expire.toUTCString();
-window.location.href = 'https://smellyfarts.blog.fc2.com/';
-}
-/*var List = {
-"sound1":"[sound1]",
-"sound2":"[sound1]",
-"sound3":"[sound1]",
-"voice1":"[sound1]",
-"move":"[sound1]",
-"pika":"[sound1]",
-"vib":"[sound1]",
-"vibend":"[sound1]",
-"blur":"[sound1]",
-"displace":"[sound1]",
-"effend":"[sound1]",
-"change1":"[sound1]",
-"dark":"[sound1]",
-"darkend":"[sound1]",
-"change2":"[sound1]"
-};*/
-function urljump(url)
-{
-	window.open(url);
-}
-function getValue(){
-  // value値を取得する
-  document.getElementById("res").innerHTML += textarea.value;
-}
-function textSave()
-{
-	var str = document.getElementById("res").innerHTML;
-	if(str != ""){
-	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
-	var blob = new Blob([ str ], { "type" : "text/plain" });
-	if (window.navigator.msSaveBlob) {
-       window.navigator.msSaveBlob(blob, "test.txt"); 
-	}else {
-		var url = window.URL.createObjectURL(blob);
-		document.getElementById("download").href = window.URL.createObjectURL(blob);
-	}
-	}
-}
-function kisd(mark)
-{
-	textarea.value += '['+mark+']\n';
-}
-</script>
 </head>
 </html>
