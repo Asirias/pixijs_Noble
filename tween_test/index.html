@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>WebGLTest</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+	<body>
+    <div id="container">
+	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+
+	</div>
+	<div id="list"></div>
+	<div id="menu">
+	json<input id="jfile" name="jfile" accept="*" type="file" /><br>
+	画像<input id="ufile" name="ufile" accept="image/*" type="file" /><br>
+	
+	<div class="item">時間
+	<input type='text' id='time' size="5">
+	<input type="button" value=" " onclick="timeSet()"><br>
+	</div>
+	<div class="item">座標
+	x<input type='text' id='posX' size="5">
+	y<input type='text' id='posY' size="5">
+	<input type="button" value=" " onclick="posSet()"><br>
+	</div>
+	<div class="item">色
+	r<input type='text' id='colorR' size="5">
+	g<input type='text' id='colorG' size="5">
+	b<input type='text' id='colorB' size="5">
+	<input type="button" value=" " onclick="colorSet()"><br>
+	</div>
+	<div class="item">サイズ
+	width<input type='text' id='width' size="5">
+	height<input type='text' id='height' size="5">
+	<input type="button" value=" " onclick="sizeSet()"><br>
+	</div>
+	<div class="item">回転(360°)
+	rotation<input type='text' id='rotation' size="5">
+	<input type="button" value=" " onclick="rotSet()"><br>
+	</div>
+	<div class="item">実行回数
+	repeat<input type='text' id='repeat' size="5">
+	<input type="button" value=" " onclick="repeatSet()"><br>
+	</div>
+	<div class="item">遅延時間(s)
+	delay<input type='text' id='delay' size="5">
+	<input type="button" value=" " onclick="delaySet()"><br>
+	</div>
+	<select id='select'>加減速の種類
+  <option value='Back.easeIn'>Back.easeIn</option>
+  <option value='Back.easeOut'>Back.easeOut</option>
+  <option value='Back.easeInOut'>Back.easeInOut</option>
+  
+  <option value='Expo.easeIn'>Expo.easeIn</option>
+  <option value='Expo.easeOut'>Expo.easeOut</option>
+  <option value='Expo.easeInOut'>Expo.easeInOut</option>
+  
+  <option value='Elastic.easeIn'>Elastic.easeIn</option>
+  <option value='Elastic.easeOut'>Elastic.easeOut</option>
+  <option value='Elastic.easeInOut'>Elastic.easeInOut</option>
+   
+  <option value='Cubic.easeIn'>Cubic.easeIn</option>
+  <option value='Cubic.easeOut'>Cubic.easeOut</option>
+  <option value='Cubic.easeInOut'>Cubic.easeInOut</option>
+</select>
+<input type="button" value=" " onclick="easeSet()">
+<br>
+	<input name='_radio' type='radio' value='play' /> play  
+	<input name='_radio' type='radio' value='reverse' /> reverse  
+	<input type="button" value="Set" onclick="setSprite_State()"><br>
+	<input type="button" value="Add" onclick="Add()"><br>
+
+	<input type="button" value="PlayAnim" onclick="PlayAnim()"><br>
+	<input type="button" value="　　　Play　　　" onclick="Play()">
+		<input type="button" value="Remove" onclick="Remove()">
+		<input type="button" value="allRemove" onclick="allRemove()">
+	<a id="download" href="#" download="data.json" onclick="">SAVE</a><br>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script src="stats.min.js"></script>
+	<script src="main.js"></script>
+	</body>
+</html>
