@@ -26,7 +26,7 @@ if(cookie_l != 'vis'){
 var expire = new Date();
 expire.setTime( expire.getTime() + 1000 * 3600 * 24 );
 document.cookie = 'data=vis; expires=' + expire.toUTCString();
-window.location.href = 'https://smellyfarts.blog.fc2.com/';
+window.location.href = 'https://smellyfarts.blog.fc2.com/?pc';
 }
 function urljump(url)
 {
