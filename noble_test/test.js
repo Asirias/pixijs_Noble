@@ -21,12 +21,18 @@ function GetCookie( name )
     return result;
 }
 var textarea = document.getElementById("message");
-var cookie_l = GetCookie('data');
+var cookie_l = GetCookie('visitone');
 if(cookie_l != 'vis'){
 var expire = new Date();
 expire.setTime( expire.getTime() + 1000 * 3600 * 24 );
-document.cookie = 'data=vis; expires=' + expire.toUTCString();
-window.location.href = 'https://smellyfarts.blog.fc2.com/?pc';
+document.cookie = 'visitone=vis; expires=' + expire.toUTCString();
+var ua = navigator.userAgent;
+    if(ua.indexOf('iPhone') > 0 || 
+	ua.indexOf('iPod') > 0 || 
+	ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0)
+	{
+         window.location.href = 'https://smellyfarts.blog.fc2.com/?pc';
+        }else window.location.href = 'https://smellyfarts.blog.fc2.com/';
 }
 function urljump(url)
 {
