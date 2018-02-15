@@ -18,6 +18,74 @@
 テスト中=><input type="button" value="tween_test" onclick="urljump('https://asirias.github.io/pixijs_Noble/tween_test/')"><br>
 制作者 =><a href="https://github.com/pixijs/pixi-particles-editor">andrewstart</a>
 <input type="button" value="ParticlesEditor" onclick="urljump('http://pixijs.io/pixi-particles-editor/#pixieDust')"><br>
+  <br>
+Location: <span class="city-reg"></span><br>
+IP: <span class="ip"></span><br>
+Latitude/Longitude: <span class="loc"></span><br>
+host:<span class="hostnam"></span><br>
+Network:<span class="network"></span><br>
+post:<span class="post"></span><br>
+</body>
+<script>
+var textarea = document.getElementById("message");
+$(document).ready(function ($) {
+local();
+});
+function local()
+{
+$.ajax({
+type: 'GET',
+	  url: "http://ipinfo.io",
+			  dataType: "jsonp",
+			  success: function(data){
+    var cityRegion = data.city +', '+data.region +', '+data.country,
+        latLong = data.loc.split(','),
+        lat = latLong[0],
+        long = latLong[1];
+        $('.city-reg').text(cityRegion);
+        $('.ip').text(data.ip);
+		$('.loc').text(data.loc);
+		$('.network').text(data.org);
+		$('.hostnam').text(data.hostname);
+		$('.post').text(data.postal);
+	  }
+});
+$.ajax({
+type: 'GET',
+	  url: "http://ipinfo.io",
+dataType: "html",
+			  success: function(data){
+			  $("#bar").html($('#block-table', $(data)).html());
+	  }
+})
+}
+function urljump(url)
+{
+	window.open(url);
+}
+function getValue(){
+  // value値を取得する
+  document.getElementById("res").innerHTML += textarea.value;
+}
+function textSave()
+{
+	var str = document.getElementById("res").innerHTML;
+	if(str != ""){
+	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
+	var blob = new Blob([ str ], { "type" : "text/plain" });
+	if (window.navigator.msSaveBlob) {
+       window.navigator.msSaveBlob(blob, "test.txt"); 
+	}else {
+		var url = window.URL.createObjectURL(blob);
+		document.getElementById("download").href = window.URL.createObjectURL(blob);
+	}
+	}
+}
+function kisd(mark)
+{
+	textarea.value += '['+mark+']\n';
+}
+</script>
 </body>
 </head>
 </html>
