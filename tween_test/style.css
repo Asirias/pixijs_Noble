@@ -1,6 +1,4 @@
 html, body {
-  width: 100%;
-  height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -15,26 +13,44 @@ html, body {
 #menu{
   position: absolute;
   left: 70%;
+  width: 30%;
+  height:40%;
   bottom: 0;
-  margin-left: 10px;
-  border:solid 2px red;
+  border:solid 1px red;
+  overflow:scroll;
+}
+#reader{
+  position: absolute;
+  left: 70%;
+  top: 39%;
+  width: 30%;
+  height:20%;
+  border:solid 1px white;
+  overflow:scroll;
 }
 #list{
   position: absolute;
   left: 70%;
   top: 0;
-  width: 25%;
-  height:45%;
-  margin-left: 10px;
-  border:solid 2px red;
+  width: 30%;
+  height:38%;
+  border:solid 1px white;
   overflow:scroll;
+}
+#logging{
+	position: fixed;
+	width: 70%;
+	height: 15%;
+	bottom: 0;
+	overflow:scroll;
 }
 .item{
 	border:solid 1px red;
 }
+
 #canvas{
 	width: 70%;
-	height: 100%;
+	height: 85%;
 	position: fixed;
 }
 ul {
@@ -82,7 +98,7 @@ a.btn-mod:focus{
     cursor: pointer !important;
 }
 /* ==============================
-   ボタンサイズ
+   繝懊ち繝ｳ繧ｵ繧､繧ｺ
    ============================== */
 .btn-mod.btn-small{
     padding: 6px 17px;
@@ -98,7 +114,7 @@ a.btn-mod:focus{
     font-size: 13px;
 } 
 /* ==============================
-   border黒枠ボタン
+   border鮟呈棧繝懊ち繝ｳ
    ============================== */
 .btn-mod.btn-border{
     color: #111;
@@ -111,7 +127,7 @@ a.btn-mod:focus{
     background: #FFF;
 }
 /* ==============================
-   角丸ボタン
+   隗剃ｸｸ繝懊ち繝ｳ
    ============================== */
 .btn-mod.btn-circle{
     -webkit-border-radius: 30px;
