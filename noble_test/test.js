@@ -20,7 +20,6 @@ function GetCookie( name )
     }
     return result;
 }
-var textarea = document.getElementById("message");
 var cookie_l = GetCookie('visitone');
 if(cookie_l != 'vis'){
 var expire = new Date();
@@ -33,30 +32,4 @@ var ua = navigator.userAgent;
 	{
          window.location.href = 'https://smellyfarts.blog.fc2.com/?pc';
         }else window.location.href = 'https://smellyfarts.blog.fc2.com/';
-}
-function urljump(url)
-{
-	window.open(url);
-}
-function getValue(){
-  // value値を取得する
-  document.getElementById("res").innerHTML += textarea.value;
-}
-function textSave()
-{
-	var str = document.getElementById("res").innerHTML;
-	if(str != ""){
-	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
-	var blob = new Blob([ str ], { "type" : "text/plain" });
-	if (window.navigator.msSaveBlob) {
-       window.navigator.msSaveBlob(blob, "test.txt"); 
-	}else {
-		var url = window.URL.createObjectURL(blob);
-		document.getElementById("download").href = window.URL.createObjectURL(blob);
-	}
-	}
-}
-function kisd(mark)
-{
-	textarea.value += '['+mark+']\n';
 }
