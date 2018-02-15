@@ -50,14 +50,6 @@ type: 'GET',
 		$('.post').text(data.postal);
 	  }
 });
-$.ajax({
-type: 'GET',
-	  url: "https://ipinfo.io",
-dataType: "html",
-			  success: function(data){
-			  $("#bar").html($('#block-table', $(data)).html());
-	  }
-})
 }
 function urljump(url)
 {
