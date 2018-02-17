@@ -469,7 +469,7 @@ function Init() {
 	stage.addChild(spriteArea);
 	spload();
 	sprite = new PIXI.Sprite(null);
-	var farTex2 = PIXI.Texture.fromImage("star.png", true, PIXI.SCALE_MODES.NEAREST);
+	var farTex2 = PIXI.Texture.fromImage("https://asirias.github.io/pixijs_Noble/noble_test/star.png", true, PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded", function() {
 		farTex2.baseTexture.removeListener("loaded");
 		star = new PIXI.Sprite(farTex2);
