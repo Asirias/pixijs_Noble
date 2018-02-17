@@ -7,12 +7,6 @@
 <script src='test.js'></script>
 <title>memo</title>
 <body>
-<div id ="res"></div>
-<TEXTAREA id="message" COLS=50 ROWS=5 WRAP="virtual"></TEXTAREA><br>
-<input type="button" value="save" onclick="getValue()">
-<input type="button" value="tagAdd" onclick="kisd('Audio')">
-<a id="download" href="#" onclick="textSave()">SAVE</a>
-<br><br><br>
 テスト中=><input type="button" value="NobelTest" onclick="urljump('https://asirias.github.io/pixijs_Noble/noble_test/index.html')"><br>
 テスト中=><input type="button" value="JsonTest" onclick="urljump('https://asirias.github.io/pixijs_Noble/noble_test/editor.html')"><br>
 テスト中=><input type="button" value="tween_test" onclick="urljump('https://asirias.github.io/pixijs_Noble/tween_test/')"><br>
@@ -42,7 +36,6 @@ Network:<span class="network"></span><br>
 post:<span class="post"></span><br>
 </body>
 <script>
-var textarea = document.getElementById("message");
 $(document).ready(function ($) {
 local();
 });
@@ -69,28 +62,6 @@ type: 'GET',
 function urljump(url)
 {
 	window.open(url);
-}
-function getValue(){
-  // value値を取得する
-  document.getElementById("res").innerHTML += textarea.value;
-}
-function textSave()
-{
-	var str = document.getElementById("res").innerHTML;
-	if(str != ""){
-	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
-	var blob = new Blob([ str ], { "type" : "text/plain" });
-	if (window.navigator.msSaveBlob) {
-       window.navigator.msSaveBlob(blob, "test.txt"); 
-	}else {
-		var url = window.URL.createObjectURL(blob);
-		document.getElementById("download").href = window.URL.createObjectURL(blob);
-	}
-	}
-}
-function kisd(mark)
-{
-	textarea.value += '['+mark+']\n';
 }
 </script>
 </body>
