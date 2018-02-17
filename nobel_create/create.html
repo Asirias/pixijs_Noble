@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<title>textcreate</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
+<script src='jquery-linedtextarea.js'></script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<body>
+
+<div id ="list">
+<input type="button" value="save" onclick="saveValue()">
+<input type="button" value="load" onclick="loadValue()">
+
+<input type="button" value="tagAdd" onclick="kisd('Audio')">
+<a id="download" href="#" onclick="textSave()">SAVE</a>
+
+<input id='charstext' size="10" type='text'>
+<input type="button" value="charsadd" onclick="addchar()">
+<input type="button" value="charsremove" onclick="removechar()">
+<select id='chars'>
+</select><br>
+</div>
+<TEXTAREA class="lined"></TEXTAREA><br>
+</body>
+<script>
+var chars = 
+{
+	'char':''
+};
+
+var charslist = [];
+
+var textsave = '';
+function chack_functions(source)
+{
+	var propNames = [];
+	var o = source;
+	while ( o ) {
+    propNames = propNames.concat( Object.getOwnPropertyNames( o ) );
+    o = Object.getPrototypeOf( o );
+	}
+	console.log(propNames);
+}
+
+$(function() {
+	$(".lined").linedtextarea();
+});
+function addchar()
+{
+	chars.char = $("#charstext").val();
+	charslist.push(chars);
+	
+	var zokusei = {text:chars.char, selected:true};  //属性を生成
+    var yoso = $('<option>', zokusei);  //要素を生成
+    $('#chars').append(yoso);  //セレクトボックスに追加
+}
+function removechar()
+{
+	var num = $("#chars").prop("selectedIndex");
+	$('#chars option').eq(num).remove();
+}
+function loadValue()
+{
+// 「はい」の場合
+if( window.confirm("保存した内容を復元しますか?(今のデーターは消えます)")){
+$(".lined").val(textsave);
+// 「いいえ」の場合
+} else {
+	// 「はい」の場合
+if( window.confirm("保存したデーターを付け足しますか?")){
+$(".lined").val($(".lined").val()+textsave);
+// 「いいえ」の場合
+}
+}
+}
+function saveValue(){
+  // value値を取得する
+  textsave = $(".lined").val();
+}
+function textSave()
+{
+	var str = $(".lined").val();
+	if(str != ""){
+	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
+	var blob = new Blob([ str ], { "type" : "text/plain" });
+	if (window.navigator.msSaveBlob) {
+       window.navigator.msSaveBlob(blob, "test.txt"); 
+	}else {
+		var url = window.URL.createObjectURL(blob);
+		document.getElementById("download").href = window.URL.createObjectURL(blob);
+	}
+	}
+}
+function kisd(mark)
+{
+	$(".lined").val($(".lined").val()+'['+mark+']\n');
+}
+</script>
+</head>
+</html>
