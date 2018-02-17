@@ -27,6 +27,7 @@ var ease;
 var delay;
 var time;
 var content;
+var touchstart_bar;
 const offsetX = 1.43;
 const offsetY = 1.18;
 (function initLoad() {
