@@ -34,10 +34,37 @@ Latitude/Longitude: <span class="loc"></span><br>
 host:<span class="hostnam"></span><br>
 Network:<span class="network"></span><br>
 post:<span class="post"></span><br>
+browser:<span class="brows"></span><br>
 </body>
 <script>
+	function MyBrowser()
+	{
+	var browser="";
+	var userAgent = window.navigator.userAgent.toLowerCase();
+
+	if(userAgent.indexOf('msie') != -1 ||
+    userAgent.indexOf('trident') != -1) {
+	browser = 'IE';
+	alert("IEでは動きません");
+	} else if(userAgent.indexOf('edge') != -1) {
+		browser = 'Edge';
+	} else if(userAgent.indexOf('chrome') != -1) {
+		browser = 'Chrome';
+	} else if(userAgent.indexOf('safari') != -1) {
+		browser = 'Safari';
+	} else if(userAgent.indexOf('firefox') != -1) {
+		browser = 'Firefox';
+	} else if(userAgent.indexOf('opera') != -1) {
+		browser = 'Opera';
+	} else {
+		browser = '???';
+		alert("一般的なブラウザじゃありません");
+	}
+	return browser;
+	}
 $(document).ready(function ($) {
 local();
+$('.brows').text(MyBrowser());
 });
 function local()
 {
