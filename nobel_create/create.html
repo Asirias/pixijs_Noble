@@ -1,103 +1,260 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<title>textcreate</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
-<script src='https://code.jquery.com/jquery-3.0.0.min.js'></script>
-<script src='jquery-linedtextarea.js'></script>
-
-<link rel="stylesheet" type="text/css" href="style.css">
-<body>
-
-<div id ="list">
-<input type="button" value="save" onclick="saveValue()">
-<input type="button" value="load" onclick="loadValue()">
-
-<input type="button" value="tagAdd" onclick="kisd('Audio')">
-<a id="download" href="#" onclick="textSave()">SAVE</a>
-
-<input id='charstext' size="10" type='text'>
-<input type="button" value="charsadd" onclick="addchar()">
-<input type="button" value="charsremove" onclick="removechar()">
-<select id='chars'>
-</select><br>
-</div>
-<TEXTAREA class="lined" charset="utf-8"></TEXTAREA><br>
-</body>
-<script>
-var chars = 
-{
-	'char':''
-};
-
-var charslist = [];
-
-var textsave = '';
-function chack_functions(source)
-{
-	var propNames = [];
-	var o = source;
-	while ( o ) {
-    propNames = propNames.concat( Object.getOwnPropertyNames( o ) );
-    o = Object.getPrototypeOf( o );
-	}
-	console.log(propNames);
-}
-
-$(function() {
-	$(".lined").linedtextarea();
-});
-function addchar()
-{
-	chars.char = $("#charstext").val();
-	charslist.push(chars);
-	
-	var zokusei = {text:chars.char, selected:true};  //属性を生成
-    var yoso = $('<option>', zokusei);  //要素を生成
-    $('#chars').append(yoso);  //セレクトボックスに追加
-}
-function removechar()
-{
-	var num = $("#chars").prop("selectedIndex");
-	$('#chars option').eq(num).remove();
-}
-function loadValue()
-{
-// 「はい」の場合
-if( window.confirm("保存した内容を復元しますか?(今のデーターは消えます)")){
-$(".lined").val(textsave);
-// 「いいえ」の場合
-} else {
-	// 「はい」の場合
-if( window.confirm("保存したデーターを付け足しますか?")){
-$(".lined").val($(".lined").val()+textsave);
-// 「いいえ」の場合
-}
-}
-}
-function saveValue(){
-  // value値を取得する
-  textsave = $(".lined").val();
-}
-function textSave()
-{
-	var str = $(".lined").val();
-	if(str != ""){
-	str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
-	var blob = new Blob([ str ], { "type" : "text/plain" });
-	if (window.navigator.msSaveBlob) {
-       window.navigator.msSaveBlob(blob, "test.txt"); 
-	}else {
-		var url = window.URL.createObjectURL(blob);
-		document.getElementById("download").href = window.URL.createObjectURL(blob);
-	}
-	}
-}
-function kisd(mark)
-{
-	$(".lined").val($(".lined").val()+'['+mark+']\n');
-}
-</script>
+	<title>textcreate</title>
+	<meta content="width=device-width, initial-scale=1, user-scalable=no" name="viewport">
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta content="text/javascript" http-equiv="Content-Script-Type">
+	<script src='https://code.jquery.com/jquery-3.0.0.min.js'>
+	</script>
+	<script src='jquery-linedtextarea.js'>
+	</script>
+	<link href="style.css" rel="stylesheet" type="text/css">
 </head>
+<body>
+	<div id="list">
+		<input onclick="saveValue()" type="button" value="save"> <input onclick="loadValue()" type="button" value="load"> <a href="#" id="download" onclick="textSave()">SAVE</a><br>
+		<br>
+		<br>
+		<br>
+		場面転換や状態(エフェクト)をしめす<br>
+		名前<input id='tagstext' size="16" type='text'><br>
+		<input onclick="addtag()" type="button" value="上記タグをリストに追加"><br>
+		<input onclick="removetag()" type="button" value="選択タグを削除"><br>
+		<input onclick="writetag()" type="button" value="選択タグを書き込む"><br>
+		<select id='tags'>
+		</select><br>
+		<br>
+		キャラ名を示す<br>
+		名前<input id='charstext' size="16" type='text'><br>
+		<input onclick="addchar()" type="button" value="上記キャラ名をリストに追加"><br>
+		<input onclick="removechar()" type="button" value="選択キャラ名を削除"><br>
+		<input onclick="writechar()" type="button" value="選択キャラ名を書き込む"><br>
+		<select id='chars'>
+		</select><br>
+		<br>
+		効果音の名前,音を示す<br>
+		名前<input id='fartsname' size="16" type='text'><br>
+		音<input id='fartssound' size="16" type='text'><br>
+		<input onclick="addfart()" type="button" value="上記効果音名、音をリストに追加"><br>
+		<input onclick="removefart()" type="button" value="選択効果音を削除"><br>
+		<input onclick="writefart()" type="button" value="選択効果音を書き込む"><br>
+		<select id='farts'>
+		</select><br>
+	</div>
+	<textarea class="lined"></textarea>
+	<script>
+
+	var charslist = [];
+	var tagslist = [];
+	var fartslist = [];
+
+	var textsave = '';
+	function chack_functions(source)
+	{
+	   var propNames = [];
+	   var o = source;
+	   while ( o ) {
+	   propNames = propNames.concat( Object.getOwnPropertyNames( o ) );
+	   o = Object.getPrototypeOf( o );
+	   }
+	   console.log(propNames);
+	}
+
+	$(function() {
+	   $(".lined").linedtextarea();
+
+	   /*$(".lined").on('keydown', function(event) {
+	   const RETURN_KEY_CODE = 13;
+	   if (event.which == RETURN_KEY_CODE) {
+	   // your code here ...
+	   
+	 }
+	});*/
+
+	});
+	function removelist(array,name,noprop = false) {
+	   if(noprop)
+	   {
+	   for (var i = array.length - 1; i >= 0; i--) {
+	   if (array[i] == name)
+	     array.splice(i, 1)
+	   }
+	   }else{
+	   for (var i = array.length - 1; i >= 0; i--) {
+	   if (array[i].name == name)
+	     array.splice(i, 1)
+	 }
+	 }
+	}
+	function pushlist(array,item)
+	{
+	   for(var i = 0;i < array.length;i++)
+	   {
+	       if(array[i] == item)return false;
+	   }
+	   array.push(item);
+	   return true;
+	}
+	function fondlist(array,item)
+	{
+	   for(var i = 0;i < array.length;i++)
+	   {
+	       if(array[i].name == item){
+	       return array[i];
+	       }
+	   }
+	   return null;
+	}
+	function writechar()
+	{
+	   var text = $('#chars').val();
+	   if(text != '\n'){
+	   text = text.replace(/\r?\n/g,"");//改行消し
+	   var val = $(".lined").val();
+	   var last_str = val.slice( -1 ) ;
+	   var txt;
+	   if(last_str != '' && last_str != '\n') txt = '\n['+text+']\n';
+	   else txt = '['+text+']\n';
+	   
+	   $(".lined").append(txt);
+	   
+	   $(".lined").val('');
+	   $(".lined").focus();
+	   $(".lined").val(val + txt);
+	   }
+	}
+	function addchar()
+	{
+	   var chars = $("#charstext").val();
+
+	   if(pushlist(charslist,chars)){
+	   var zokusei = {text:chars, selected:true};  //属性を生成
+	   var yoso = $('<option>', zokusei);  //要素を生成
+	   $('#chars').append(yoso);  //セレクトボックスに追加
+	   }
+	}
+	function removechar()
+	{
+	   var num = $("#chars").prop("selectedIndex");
+	   var ll = $('#chars option').eq(num);
+
+	   removelist(charslist,ll.val(),true);
+	   ll.remove();
+	}
+
+	function addtag()
+	{
+	   var tags = $("#tagstext").val();
+	   if(pushlist(tagslist,tags)){
+	   
+	   var zokusei = {text:tags, selected:true};  //属性を生成
+	   var yoso = $('<option>', zokusei);  //要素を生成
+	   $('#tags').append(yoso);  //セレクトボックスに追加
+	   }
+	}
+	function removetag()
+	{
+	   var num = $("#tags").prop("selectedIndex");
+	   var ll = $('#tags option').eq(num);
+
+	   removelist(tagslist,ll.val(),true);
+	   ll.remove();
+	}
+	function writetag()
+	{
+	   var tag = $('#tags').val();
+	   if(tag != '\n'){
+	   tag = tag.replace(/\r?\n/g,"");//改行消し
+	   var val = $(".lined").val();
+
+	   var last_str = val.slice( -1 ) ;
+	   var txt;
+	   if(last_str != '' && last_str != '\n') txt = '\n['+tag+']\n';
+	   else txt = '['+tag+']\n';
+	   
+	   $(".lined").append(txt);
+
+	   $(".lined").val('');
+	   $(".lined").focus();
+	   $(".lined").val(val + txt);
+	   }
+	}
+	function writefart()
+	{
+	   var tag = $('#farts').val();
+	   if(tag != '\n'){
+	   tag = tag.replace(/\r?\n/g,"");//改行消し
+	   var val = $(".lined").val();
+
+	   var sound = fondlist(fartslist,tag).sound;
+	   
+	   var last_str = val.slice( -1 ) ;
+	   var txt;
+	   if(last_str != '' && last_str != '\n') txt = '\n['+tag+']\n'+sound+'\n';
+	   else txt = '['+tag+']\n'+sound+'\n';
+
+	   $(".lined").append(txt);
+
+	   $(".lined").val('');
+	   $(".lined").focus();
+	   $(".lined").val(val + txt);
+	   }
+	}
+	function addfart()
+	{
+	   var name = $("#fartsname").val();
+	   var sound = $("#fartssound").val();
+	   var farttag = {
+	   'name':name,
+	   'sound':sound
+	   };
+	   
+	   if(pushlist(fartslist,farttag)){
+	   var zokusei = {text:name, selected:true};  //属性を生成
+	   var yoso = $('<option>', zokusei);  //要素を生成
+	   $('#farts').append(yoso);  //セレクトボックスに追加
+	   }
+	}
+	function removefart()
+	{
+	   var num = $("#farts").prop("selectedIndex");
+	   var ll = $('#farts option').eq(num);
+
+	   removelist(fartslist,ll.val());
+	   ll.remove();
+	}
+	function loadValue()
+	{
+	// 「はい」の場合
+	if( window.confirm("保存した内容を復元しますか?(今のデーターは消えます)")){
+	$(".lined").val(textsave);
+	// 「いいえ」の場合
+	} else {
+	   // 「はい」の場合
+	if( window.confirm("保存したデーターを付け足しますか?")){
+	$(".lined").append(textsave);
+	}
+	}
+	}
+	function saveValue(){
+	 // value値を取得する
+	 textsave = $(".lined").val();
+	 alert("保存しました");
+	}
+	function textSave()
+	{
+	   var str = $(".lined").val();
+	   if(str != ""){
+	   str = str.replace(/\n/g, "\r\n").replace(/\r\r/g, "\r");
+	   var blob = new Blob([ str ], { "type" : "text/plain" });
+	   if (window.navigator.msSaveBlob) {
+	      window.navigator.msSaveBlob(blob, "test.txt"); 
+	   }else {
+	       document.getElementById("download").href = window.URL.createObjectURL(blob);
+	   }
+	   }
+	}
+	</script>
+</body>
 </html>
