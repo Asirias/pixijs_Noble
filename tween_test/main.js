@@ -27,10 +27,36 @@ var ease;
 var delay;
 var time;
 var content;
-var touchstart_bar;
 const offsetX = 1.43;
 const offsetY = 1.18;
+
+function MyBrowser()
+	{
+	var browser="";
+	var userAgent = window.navigator.userAgent.toLowerCase();
+
+	if(userAgent.indexOf('msie') != -1 ||
+    userAgent.indexOf('trident') != -1) {
+	browser = 'I';
+	} else if(userAgent.indexOf('edge') != -1) {
+		browser = 'E';
+	} else if(userAgent.indexOf('chrome') != -1) {
+		browser = 'C';
+	} else if(userAgent.indexOf('safari') != -1) {
+		browser = 'S';
+		$('#download').attr('download', 'data.json');//属性追加
+	} else if(userAgent.indexOf('firefox') != -1) {
+		browser = 'F';
+		$('#download').attr('download', 'data.json');//属性追加
+	} else if(userAgent.indexOf('opera') != -1) {
+		browser = 'O';
+	} else {
+		browser = '?';
+	}
+		return browser;
+	}
 (function initLoad() {
+	var browser = MyBrowser();
 	canvas = document.getElementById('canvas');
 	var ua = navigator.userAgent;
 	if (ua.indexOf('iPhone') > 0 || ua.indexOf('iPod') > 0 || ua.indexOf('Android') > 0 && ua.indexOf('Mobile') > 0) {
@@ -100,6 +126,8 @@ const offsetY = 1.18;
 	heightD = document.getElementById("height");
 	
 	writeLog("width:" + canvas.width + " height:" + canvas.height);
+	
+	writeLog(browser);
 	selecter = false;
 	dragging = false;
 	time = 0.0;
@@ -154,7 +182,6 @@ function jsonSave() {
 	if (window.navigator.msSaveBlob) {
 		window.navigator.msSaveBlob(blob, "data.json");
 	} else {
-		var url = window.URL.createObjectURL(blob);
 		document.getElementById("download").href = window.URL.createObjectURL(blob);
 	}
 }
@@ -340,6 +367,7 @@ function colorSet() {
 	if (col) {
 		var parse_col_val = parseInt(col, 16); //16進数文字列を10進数整数に変換
 		tint = parse_col_val;
+		sprite.tint = tint;
 	}
 }
 
@@ -470,7 +498,7 @@ function Init() {
 	stage.addChild(spriteArea);
 	spload();
 	sprite = new PIXI.Sprite(null);
-	var farTex2 = PIXI.Texture.fromImage("https://asirias.github.io/pixijs_Noble/noble_test/star.png", true, PIXI.SCALE_MODES.NEAREST);
+	var farTex2 = PIXI.Texture.fromImage("star.png", true, PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded", function() {
 		farTex2.baseTexture.removeListener("loaded");
 		star = new PIXI.Sprite(farTex2);
@@ -574,7 +602,7 @@ function touchmoves(e) {
 				zoomin(centor_posX, centor_posY, 0.98);
 			}
 		}
-		clickdrag(pageX, pageY);
+		clickdrag(pagex, pagey);
 	}
 }
 
@@ -608,11 +636,9 @@ function clickUpact(mouseX, mouseY) {
 }
 
 function capture() {
-	progressBar.alpha = 0;
 	renderer.render(spriteArea);
-	var imgUrl = renderer.view.toDataURL("image/png");
+	var imgUrl = renderer.view.toDataURL();
 	window.open(imgUrl);
-	progressBar.alpha = 1;
 }
 
 function enterFrameHandler() {
