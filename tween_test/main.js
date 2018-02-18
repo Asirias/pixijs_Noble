@@ -37,19 +37,19 @@ function MyBrowser()
 
 	if(userAgent.indexOf('msie') != -1 ||
     userAgent.indexOf('trident') != -1) {
-	browser = 'I';
+	browser = 'IE';
 	} else if(userAgent.indexOf('edge') != -1) {
-		browser = 'E';
+		browser = 'ED';
 	} else if(userAgent.indexOf('chrome') != -1) {
-		browser = 'C';
+		browser = 'CR';
 	} else if(userAgent.indexOf('safari') != -1) {
-		browser = 'S';
+		browser = 'SF';
 		$('#download').attr('download', 'data.json');//属性追加
 	} else if(userAgent.indexOf('firefox') != -1) {
-		browser = 'F';
+		browser = 'FF';
 		$('#download').attr('download', 'data.json');//属性追加
 	} else if(userAgent.indexOf('opera') != -1) {
-		browser = 'O';
+		browser = 'OP';
 	} else {
 		browser = '?';
 	}
@@ -268,7 +268,7 @@ function Add()
 	var anim = {
 		x: x ? x : 0,
 		y: y ? y : 0,
-		tint: tint ? tint : undefined,
+		tint: tint ? tint : rgb(255, 255, 255),
 		/*色*/
 		width: width ? width : undefined,
 		height: height ? height : undefined,
@@ -278,9 +278,12 @@ function Add()
 		ease: ease ? ease : undefined // 加減速の種類
 	};
 	var list = document.getElementById("list");
-	if (time == 0) {
-		list.innerHTML = "時間が0です";
+
+	if(time == 0)
+	{
+		if( window.confirm("時間が0ですがやり直しますか?")){
 		return;
+		}
 	}
 	list.innerHTML = '';
 	anims.push(anim);
@@ -288,18 +291,19 @@ function Add()
 	writeLog("アニメの数" + anims.length);
 	for (var i = 0; i < anims.length; i++) {
 		var animls = anims[i];
-		var astr = '';
-		astr += (times[i] ? times[i] : "") + ":";
-		astr += (animls.x ? animls.x : "") + ":";
-		astr += (animls.y ? animls.y : "") + ":";
-		astr += (animls.tint ? animls.tint : "") + ":";
-		astr += (animls.width ? animls.width : "") + ":";
-		astr += (animls.height ? animls.height : "") + ":";
-		astr += (animls.delay ? animls.delay : "") + ":";
-		astr += (animls.rotation ? animls.rotation : "") + ":";
-		astr += (animls.repeat ? animls.repeat : "") + ":";
-		astr += (animls.ease ? animls.ease : "") + "<br>";
+		var astr = 'アニメ'+i;
+		astr += " 時間:" + (times[i] ? times[i] : "") + "<br>";
+		astr += "X:" + (animls.x ? animls.x : "0") + "<br>";
+		astr += "Y:" + (animls.y ? animls.y : "0") + "<br>";
+		astr += "色:" + (animls.tint ? animls.tint.toString(16) : "") + "<br>";
+		astr += "width:" + (animls.width ? animls.width : "") + "<br>";
+		astr += "height:" + (animls.height ? animls.height : "") + "<br>";
+		astr += "遅延時間:" + (animls.delay ? animls.delay : "") + "<br>";
+		astr += "回転:" + (animls.rotation ? animls.rotation : "0") + "<br>";
+		astr += "繰り返し回数:" + (animls.repeat ? animls.repeat : "0") + "<br>";
+		astr += "加減速の種類:" + (animls.ease ? animls.ease : "") + "<br><br>";
 		list.innerHTML += astr;
+		//list.style.border = 'thin solid rgb( 0, 0, 255 )';
 	}
 
 	x = 0;
@@ -316,7 +320,23 @@ function Add()
 function Remove() {
 	anims.pop();
 	times.pop();
-	document.getElementById("list").innerHTML += "アニメーションを戻します<br>";
+	var list = document.getElementById("list");
+	for (var i = 0; i < anims.length; i++) {
+		var animls = anims[i];
+		var astr = 'アニメ'+i;
+		astr += " 時間:" + (times[i] ? times[i] : "") + "<br>";
+		astr += "X:" + (animls.x ? animls.x : "0") + "<br>";
+		astr += "Y:" + (animls.y ? animls.y : "0") + "<br>";
+		astr += "色:" + (animls.tint ? animls.tint.toString(16) : "") + "<br>";
+		astr += "width:" + (animls.width ? animls.width : "") + "<br>";
+		astr += "height:" + (animls.height ? animls.height : "") + "<br>";
+		astr += "遅延時間:" + (animls.delay ? animls.delay : "") + "<br>";
+		astr += "回転:" + (animls.rotation ? animls.rotation : "0") + "<br>";
+		astr += "繰り返し回数:" + (animls.repeat ? animls.repeat : "0") + "<br>";
+		astr += "加減速の種類:" + (animls.ease ? animls.ease : "") + "<br><br>";
+		list.innerHTML += astr;
+		//list.style.border = 'thin solid rgb( 0, 0, 255 )';
+	}
 }
 
 function allRemove() {
@@ -461,6 +481,10 @@ function easeSet() {
 }
 
 function PlayAnim() {
+	if(anims.length < 2){
+		writeLog('2つ以下の設定ではアニメーションしません');
+		return;
+	}
 	line = new TimelineMax();
 	for (var i = 0; i < anims.length; i++) {
 		line.to(sprite, times[i] /*実行秒*/ , anims[i] /*アニメ*/ );
@@ -468,19 +492,33 @@ function PlayAnim() {
 	var farststate = anims[0];
 	sprite.x = farststate.x;
 	sprite.y = farststate.y;
-	sprite.tint = farststate.tint;
-	sprite.width = farststate.width;
-	sprite.height = farststate.height;
+	sprite.tint = rgb(255, 255, 255);
+	sprite.width = canvas.width;
+	sprite.height = canvas.height;
 	sprite.rotation = farststate.rotation;
+
 	var pl = $('input[name=_radio]:checked').val();
 	if (pl == 'play') {
 		line.eventCallback("onComplete", function() {
 			writeLog('onComplete');
+			console.log(farststate);
+				sprite.x = farststate.x;
+	sprite.y = farststate.y;
+	sprite.tint = rgb(255, 255, 255);
+	sprite.width = canvas.width;
+	sprite.height = canvas.height;
+	sprite.rotation = farststate.rotation;
 		});
 		line.play();
 	} else {
 		line.eventCallback("onReverseComplete", function() {
 			writeLog('onReverseComplete');
+				sprite.x = farststate.x;
+	sprite.y = farststate.y;
+	sprite.tint = rgb(255, 255, 255);
+	sprite.width = canvas.width;
+	sprite.height = canvas.height;
+	sprite.rotation = farststate.rotation;
 		});
 		line.reverse();
 	}
