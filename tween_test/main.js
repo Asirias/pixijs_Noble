@@ -9,7 +9,7 @@ var progressBarWidth;
 var log;
 var line;
 var posX, posY;
-var widthD,heightD;
+var widthD, heightD;
 var selecter;
 var star;
 var oldmouseposx;
@@ -19,7 +19,7 @@ var dragging;
 var anims = new Array();
 var times = new Array();
 var x, y;
-var tint;
+
 var width, height;
 var rotation;
 var repeat;
@@ -30,31 +30,28 @@ var content;
 const offsetX = 1.43;
 const offsetY = 1.18;
 
-function MyBrowser()
-	{
-	var browser="";
+function MyBrowser() {
+	var browser = "";
 	var userAgent = window.navigator.userAgent.toLowerCase();
-
-	if(userAgent.indexOf('msie') != -1 ||
-    userAgent.indexOf('trident') != -1) {
-	browser = 'IE';
-	} else if(userAgent.indexOf('edge') != -1) {
+	if (userAgent.indexOf('msie') != -1 || userAgent.indexOf('trident') != -1) {
+		browser = 'IE';
+	} else if (userAgent.indexOf('edge') != -1) {
 		browser = 'ED';
-	} else if(userAgent.indexOf('chrome') != -1) {
+	} else if (userAgent.indexOf('chrome') != -1) {
 		browser = 'CR';
-	} else if(userAgent.indexOf('safari') != -1) {
+	} else if (userAgent.indexOf('safari') != -1) {
 		browser = 'SF';
-		$('#download').attr('download', 'data.json');//属性追加
-	} else if(userAgent.indexOf('firefox') != -1) {
+		$('#download').attr('download', 'data.json'); //属性追加
+	} else if (userAgent.indexOf('firefox') != -1) {
 		browser = 'FF';
-		$('#download').attr('download', 'data.json');//属性追加
-	} else if(userAgent.indexOf('opera') != -1) {
+		$('#download').attr('download', 'data.json'); //属性追加
+	} else if (userAgent.indexOf('opera') != -1) {
 		browser = 'OP';
 	} else {
 		browser = '?';
 	}
-		return browser;
-	}
+	return browser;
+}
 (function initLoad() {
 	var browser = MyBrowser();
 	canvas = document.getElementById('canvas');
@@ -98,7 +95,7 @@ function MyBrowser()
 				zoomin(mouseX, mouseY, 1.01);
 			}
 			widthD.value = sprite.width;
-		heightD.value = sprite.height;
+			heightD.value = sprite.height;
 		});
 		canvas.onmousedown = function(e) {
 			mousedown(e);
@@ -112,9 +109,9 @@ function MyBrowser()
 			clickUpact(mouseX, mouseY);
 		};
 	}
+		
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-
 	document.getElementById("time").value = 0.0;
 	document.getElementById("rotation").value = 0;
 	document.getElementById("repeat").value = 0;
@@ -124,16 +121,14 @@ function MyBrowser()
 	posY = document.getElementById("posY");
 	widthD = document.getElementById("width");
 	heightD = document.getElementById("height");
-	
 	writeLog("width:" + canvas.width + " height:" + canvas.height);
-	
 	writeLog(browser);
 	selecter = false;
 	dragging = false;
 	time = 0.0;
 	x = 0;
 	y = 0;
-	tint = 0;
+
 	width = 0;
 	height = 0;
 	rotation = 0;
@@ -141,11 +136,11 @@ function MyBrowser()
 	ease = undefined;
 	delay = undefined;
 	content = {
-	"pos": {
-		"x": 0.5,
-		"y": 0.5
-	},
-	"texture": "data:"
+		"pos": {
+			"x": 0.5,
+			"y": 0.5
+		},
+		"texture": "data:"
 	};
 	stage = new PIXI.Container();
 	renderer = PIXI.autoDetectRenderer(canvas.width, canvas.height, {
@@ -211,6 +206,8 @@ function jsonLoad2() {
 				posY.value = 0;
 				widthD.value = sprite.width;
 				heightD.value = sprite.height;
+				sizeSet();
+
 				if (star) {
 					star.x = canvas.width * content.pos.x;
 					star.y = canvas.height * content.pos.y;
@@ -232,10 +229,14 @@ function TLoad(filedata) {
 		var texture_width = farTexture.width;
 		var texture_height = farTexture.height;
 		sprite = new PIXI.Sprite(farTexture);
+		
 		posX.value = 0;
 		posY.value = 0;
 		widthD.value = sprite.width;
 		heightD.value = sprite.height;
+
+		sizeSet();
+
 		spriteArea.addChild(sprite);
 	});
 }
@@ -261,15 +262,16 @@ function spload() {
 	});
 }
 
-function Add() 
-{
-	posSet();
-	sizeSet();
-	var anim = {
+function Add() {
+	if (time == 0) {
+		alert("アニメーションには時間設定が必須です");
+		$('#time').focus();
+		return;
+	}
+	
+		var anim = {
 		x: x ? x : 0,
 		y: y ? y : 0,
-		tint: tint ? tint : rgb(255, 255, 255),
-		/*色*/
 		width: width ? width : undefined,
 		height: height ? height : undefined,
 		delay: delay ? delay : undefined,
@@ -277,27 +279,21 @@ function Add()
 		repeat: repeat ? repeat : 0, // 繰り返し回数指定 -1はループ
 		ease: ease ? ease : undefined // 加減速の種類
 	};
-	var list = document.getElementById("list");
 
-	if(time == 0)
-	{
-		if( window.confirm("時間が0ですがやり直しますか?")){
-		return;
-		}
-	}
+	var list = document.getElementById("list");
 	list.innerHTML = '';
+	 times.push(time);
 	anims.push(anim);
-	times.push(time);
+
 	writeLog("アニメの数" + anims.length);
 	for (var i = 0; i < anims.length; i++) {
 		var animls = anims[i];
-		var astr = 'アニメ'+i;
-		astr += " 時間:" + (times[i] ? times[i] : "") + "<br>";
+		var astr = 'アニメ' + i;
+		astr += " 時間:" + (times[i] ? times[i] : "0") + "<br>";
 		astr += "X:" + (animls.x ? animls.x : "0") + "<br>";
 		astr += "Y:" + (animls.y ? animls.y : "0") + "<br>";
-		astr += "色:" + (animls.tint ? animls.tint.toString(16) : "") + "<br>";
-		astr += "width:" + (animls.width ? animls.width : "") + "<br>";
-		astr += "height:" + (animls.height ? animls.height : "") + "<br>";
+		astr += "width:" + (animls.width ? animls.width : "0") + "<br>";
+		astr += "height:" + (animls.height ? animls.height : "0") + "<br>";
 		astr += "遅延時間:" + (animls.delay ? animls.delay : "") + "<br>";
 		astr += "回転:" + (animls.rotation ? animls.rotation : "0") + "<br>";
 		astr += "繰り返し回数:" + (animls.repeat ? animls.repeat : "0") + "<br>";
@@ -305,16 +301,6 @@ function Add()
 		list.innerHTML += astr;
 		//list.style.border = 'thin solid rgb( 0, 0, 255 )';
 	}
-
-	x = 0;
-	y = 0;
-	tint = 0;
-	width = 0;
-	height = 0;
-	rotation = 0;
-	repeat = undefined;
-	ease = undefined;
-	delay = undefined;
 }
 
 function Remove() {
@@ -323,13 +309,12 @@ function Remove() {
 	var list = document.getElementById("list");
 	for (var i = 0; i < anims.length; i++) {
 		var animls = anims[i];
-		var astr = 'アニメ'+i;
-		astr += " 時間:" + (times[i] ? times[i] : "") + "<br>";
+		var astr = 'アニメ' + i;
+		astr += " 時間:" + (times[i] ? times[i] : "0") + "<br>";
 		astr += "X:" + (animls.x ? animls.x : "0") + "<br>";
 		astr += "Y:" + (animls.y ? animls.y : "0") + "<br>";
-		astr += "色:" + (animls.tint ? animls.tint.toString(16) : "") + "<br>";
-		astr += "width:" + (animls.width ? animls.width : "") + "<br>";
-		astr += "height:" + (animls.height ? animls.height : "") + "<br>";
+		astr += "width:" + (animls.width ? animls.width : "0") + "<br>";
+		astr += "height:" + (animls.height ? animls.height : "0") + "<br>";
 		astr += "遅延時間:" + (animls.delay ? animls.delay : "") + "<br>";
 		astr += "回転:" + (animls.rotation ? animls.rotation : "0") + "<br>";
 		astr += "繰り返し回数:" + (animls.repeat ? animls.repeat : "0") + "<br>";
@@ -348,7 +333,7 @@ function allRemove() {
 function Clear() {
 	sprite.x = 0;
 	sprite.y = 0;
-	sprite.tint = rgb(255, 255, 255);
+
 	sprite.width = canvas.width;
 	sprite.height = canvas.height;
 	sprite.rotation = 0;
@@ -357,17 +342,17 @@ function Clear() {
 	document.getElementById("rotation").value = 0;
 	widthD.value = sprite.width;
 	heightD.value = sprite.height;
-
 	x = 0;
 	y = 0;
-	tint = 0;
-	width = 0;
-	height = 0;
+
+	width = sprite.width;
+	height = sprite.height;
 	rotation = 0;
 	repeat = undefined;
 	ease = undefined;
 	delay = undefined;
 }
+
 function timeSet() {
 	var timel = document.getElementById("time").value;
 	if (timel) time = timel;
@@ -382,23 +367,18 @@ function posSet() {
 	}
 }
 
-function colorSet() {
-	var col = $('.jscolor').val();
-	if (col) {
-		var parse_col_val = parseInt(col, 16); //16進数文字列を10進数整数に変換
-		tint = parse_col_val;
-		sprite.tint = tint;
-	}
-}
-
 function sizeSet() {
 	var widthl = widthD.value;
 	var heightl = heightD.value;
 	if (widthl) {
 		width = widthl;
+		if(sprite)
+		sprite.width = width;
 	}
 	if (heightl) {
 		height = heightl;
+		if(sprite)
+		sprite.height = height;
 	}
 }
 
@@ -407,6 +387,7 @@ function rotSet() {
 	if (rotationl) {
 		rotation = ToRadians(rotationl);
 	}
+	if(sprite)sprite.rotation = rotation;
 }
 
 function repeatSet() {
@@ -439,32 +420,23 @@ function easeSet() {
 		case 'No':
 			ease = undefined;
 			break;
-		case 'Back.easeIn':
-			ease = Back.easeIn;
+		case 'Sine.easeIn':
+			ease = Sine.easeIn;
 			break;
-		case 'Back.easeOut':
-			ease = Back.easeOut;
+		case 'Sine.easeOut':
+			ease = Sine.easeOut;
 			break;
-		case 'Back.easeInOut':
-			ease = Back.easeInOut;
+		case 'Sine.easeInOut':
+			ease = Sine.easeInOut;
 			break;
-		case 'Expo.easeIn':
-			ease = Expo.easeIn;
+		case 'Quad.easeIn':
+			ease = Quad.easeIn;
 			break;
-		case 'Expo.easeOut':
-			ease = Expo.easeOut;
+		case 'Quad.easeOut':
+			ease = Quad.easeOut;
 			break;
-		case 'Expo.easeInOut':
-			ease = Expo.easeInOut;
-			break;
-		case 'Elastic.easeIn':
-			ease = Elastic.easeIn;
-			break;
-		case 'Elastic.easeOut':
-			ease = Elastic.easeOut;
-			break;
-		case 'Elastic.easeInOut':
-			ease = Elastic.easeInOut;
+		case 'Quad.easeInOut':
+			ease = Quad.easeInOut;
 			break;
 		case 'Cubic.easeIn':
 			ease = Cubic.easeIn;
@@ -475,16 +447,81 @@ function easeSet() {
 		case 'Cubic.easeInOut':
 			ease = Cubic.easeInOut;
 			break;
+		case 'Quart.easeIn':
+			ease = Quart.easeIn;
+			break;
+		case 'Quart.easeOut':
+			ease = Quart.easeOut;
+			break;
+		case 'Quart.easeInOut':
+			ease = Quart.easeInOut;
+			break;
+		case 'Quint.easeIn':
+			ease = Quint.easeIn;
+			break;
+		case 'Quint.easeOut':
+			ease = Quint.easeOut;
+			break;
+		case 'Quint.easeInOut':
+			ease = Quint.easeInOut;
+			break;
+		case 'Expo.easeIn':
+			ease = Expo.easeIn;
+			break;
+		case 'Expo.easeOut':
+			ease = Expo.easeOut;
+			break;
+		case 'Expo.easeInOut':
+			ease = Expo.easeInOut;
+			break;
+		case 'Circ.easeIn':
+			ease = Circ.easeIn;
+			break;
+		case 'Circ.easeOut':
+			ease = Circ.easeOut;
+			break;
+		case 'Circ.easeInOut':
+			ease = Circ.easeInOut;
+			break;
+		case 'Back.easeIn':
+			ease = Back.easeIn;
+			break;
+		case 'Back.easeOut':
+			ease = Back.easeOut;
+			break;
+		case 'Back.easeInOut':
+			ease = Back.easeInOut;
+			break;
+		case 'Elastic.easeIn':
+			ease = Elastic.easeIn;
+			break;
+		case 'Elastic.easeOut':
+			ease = Elastic.easeOut;
+			break;
+		case 'Elastic.easeInOut':
+			ease = Elastic.easeInOut;
+			break;
+		case 'Bounce.easeIn':
+			ease = Bounce.easeIn;
+			break;
+		case 'Bounce.easeOut':
+			ease = Bounce.easeOut;
+			break;
+		case 'Bounce.easeInOut':
+			ease = Bounce.easeInOut;
+			break;
 		default:
 			break;
 	}
 }
 
 function PlayAnim() {
-	if(anims.length < 2){
+	if (anims.length < 2) {
 		writeLog('2つ以下の設定ではアニメーションしません');
 		return;
 	}
+	var pl = $('input[name=_radio]:checked').val();
+	if (pl == 'play') {
 	line = new TimelineMax();
 	for (var i = 0; i < anims.length; i++) {
 		line.to(sprite, times[i] /*実行秒*/ , anims[i] /*アニメ*/ );
@@ -492,35 +529,37 @@ function PlayAnim() {
 	var farststate = anims[0];
 	sprite.x = farststate.x;
 	sprite.y = farststate.y;
-	sprite.tint = rgb(255, 255, 255);
 	sprite.width = canvas.width;
 	sprite.height = canvas.height;
 	sprite.rotation = farststate.rotation;
-
-	var pl = $('input[name=_radio]:checked').val();
-	if (pl == 'play') {
+	
+	var yo = $('#yoyo').prop("checked");
+	if(yo)line.yoyo(true);
 		line.eventCallback("onComplete", function() {
 			writeLog('onComplete');
-			console.log(farststate);
-				sprite.x = farststate.x;
-	sprite.y = farststate.y;
-	sprite.tint = rgb(255, 255, 255);
-	sprite.width = canvas.width;
-	sprite.height = canvas.height;
-	sprite.rotation = farststate.rotation;
+			sprite.width = canvas.width;
+			sprite.height = canvas.height;
+			sprite.rotation = farststate.rotation;
+			zoomin(farststate.x,farststate.y,1.0);
+			oldmouseposx = sprite.x;
+			oldmouseposy = sprite.y;
 		});
 		line.play();
-	} else {
+	} else if(pl == 'reverse'){
 		line.eventCallback("onReverseComplete", function() {
 			writeLog('onReverseComplete');
-				sprite.x = farststate.x;
-	sprite.y = farststate.y;
-	sprite.tint = rgb(255, 255, 255);
-	sprite.width = canvas.width;
-	sprite.height = canvas.height;
-	sprite.rotation = farststate.rotation;
+			sprite.width = canvas.width;
+			sprite.height = canvas.height;
+			sprite.rotation = farststate.rotation;
+			zoomin(farststate.x,farststate.y,1.0);
+			oldmouseposx = sprite.x;
+			oldmouseposy = sprite.y;
 		});
 		line.reverse();
+	}else if(pl == 'restart'){
+		line.restart(true,false);
+	}else{
+		line.invalidate().restart(true,false);
 	}
 }
 
@@ -536,13 +575,15 @@ function Init() {
 	stage.addChild(spriteArea);
 	spload();
 	sprite = new PIXI.Sprite(null);
+	
 	var farTex2 = PIXI.Texture.fromImage("star.png", true, PIXI.SCALE_MODES.NEAREST);
 	farTex2.baseTexture.addListener("loaded", function() {
 		farTex2.baseTexture.removeListener("loaded");
 		star = new PIXI.Sprite(farTex2);
-		star.x = canvas.width / 2;
-		star.y = canvas.height / 2;
+		star.x = canvas.width;
+		star.y = canvas.height;
 		stage.addChild(star);
+
 		progressBar = new PIXI.DisplayObjectContainer();
 		progressBar.position.set(0, canvas.height - 8)
 		stage.addChild(progressBar);
@@ -585,11 +626,13 @@ function clickact(mouseX, mouseY) {
 
 function clickdrag(mouseX, mouseY) {
 	if (dragging) {
-		sprite.position.x += (mouseX - oldmouseposx);
-		sprite.position.y += (mouseY - oldmouseposy);
-
+		var Xx = sprite.x + (mouseX - oldmouseposx);
+		var Yy = sprite.y + (mouseY - oldmouseposy);
 		oldmouseposx = mouseX;
 		oldmouseposy = mouseY;
+
+		sprite.x = Xx;
+		sprite.y = Yy;
 	}
 }
 
@@ -664,8 +707,8 @@ function touchstarts(e) {
 function clickUpact(mouseX, mouseY) {
 	dragging = false;
 	if (!selecter) {
-		posX.value = sprite.position.x;
-		posY.value = sprite.position.y;
+		posX.value = sprite.x;
+		posY.value = sprite.y;
 		posSet();
 		widthD.value = sprite.width;
 		heightD.value = sprite.height;
