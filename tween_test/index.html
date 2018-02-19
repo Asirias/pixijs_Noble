@@ -31,57 +31,48 @@
 		<div id="menu">
 			<input onclick="Add()" type="button" value=" Add "> <input onclick="PlayAnim()" type="button" value=" Play "><br>
 			<div class="item">
-				時間(s) <input id='time' onchange="timeSet()" size="5" type='text'><br>
+				<font size = 2>時間(s)</font> <input id='time' onchange="timeSet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				座標 x<input id='posX' onchange="posSet()" size="5" type='text'> y<input id='posY' onchange="posSet()" size="5" type='text'><br>
+				<font size = 2>座標 x</font><input id='posX' onchange="posSet()" size="5" type='text'> 
+				<font size = 2>y</font><input id='posY' onchange="posSet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				色 <input class="jscolor" onchange="colorSet()" value="ab2567"><br>
+				<font size = 2>サイズ 幅</font><input id='width' onchange="sizeSet()" size="5" type='text'> 
+				<font size = 2>高さ</font><input id='height' onchange="sizeSet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				サイズ 横幅<input id='width' onchange="sizeSet()" size="5" type='text'> 縦幅<input id='height' onchange="sizeSet()" size="5" type='text'><br>
+				<font size = 2>回転(360°)</font> <input id='rotation' onchange="rotSet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				回転(360°) <input id='rotation' onchange="rotSet()" size="5" type='text'><br>
+				<font size = 2>実行回数(-1はループ)</font> <input id='repeat' onchange="repeatSet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				実行回数 <input id='repeat' onchange="repeatSet()" size="5" type='text'><br>
+				<font size = 2>遅延時間(s)</font> <input id='delay' onchange="delaySet()" size="5" type='text'><br>
 			</div>
 			<div class="item">
-				遅延時間(s) <input id='delay' onchange="delaySet()" size="5" type='text'><br>
-			</div>
-			<div class="item">
+			<a href="http://easings.net/ja" target="_blank">表</a>
 				<select id='select' onchange="easeSet()">
 					<option value='No'>
 						No
 					</option>
-					<option value='Back.easeIn'>
-						Back.easeIn
+					<option value='Sine.easeIn'>
+						Sine.easeIn
 					</option>
-					<option value='Back.easeOut'>
-						Back.easeOut
+					<option value='Sine.easeOut'>
+						Sine.easeOut
 					</option>
-					<option value='Back.easeInOut'>
-						Back.easeInOut
+					<option value='Sine.easeInOut'>
+						Sine.easeInOut
 					</option>
-					<option value='Expo.easeIn'>
-						Expo.easeIn
+					<option value='Quad.easeIn'>
+						Quad.easeIn
 					</option>
-					<option value='Expo.easeOut'>
-						Expo.easeOut
+					<option value='Quad.easeOut'>
+						Quad.easeOut
 					</option>
-					<option value='Expo.easeInOut'>
-						Expo.easeInOut
-					</option>
-					<option value='Elastic.easeIn'>
-						Elastic.easeIn
-					</option>
-					<option value='Elastic.easeOut'>
-						Elastic.easeOut
-					</option>
-					<option value='Elastic.easeInOut'>
-						Elastic.easeInOut
+					<option value='Quad.easeInOut'>
+						Quad.easeInOut
 					</option>
 					<option value='Cubic.easeIn'>
 						Cubic.easeIn
@@ -92,19 +83,90 @@
 					<option value='Cubic.easeInOut'>
 						Cubic.easeInOut
 					</option>
+					<option value='Quart.easeIn'>
+						Quart.easeIn
+					</option>
+					<option value='Quart.easeOut'>
+						Quart.easeOut
+					</option>
+					<option value='Quart.easeInOut'>
+						Quart.easeInOut
+					</option>
+					<option value='Quint.easeIn'>
+						Quint.easeIn
+					</option>
+					<option value='Quint.easeOut'>
+						Quint.easeOut
+					</option>
+					<option value='Quint.easeInOut'>
+						Quint.easeInOut
+					</option>
+					<option value='Expo.easeIn'>
+						Expo.easeIn
+					</option>
+					<option value='Expo.easeOut'>
+						Expo.easeOut
+					</option>
+					<option value='Expo.easeInOut'>
+						Expo.easeInOut
+					</option>
+					<option value='Circ.easeIn'>
+						Circ.easeIn
+					</option>
+					<option value='Circ.easeOut'>
+						Circ.easeOut
+					</option>
+					<option value='Circ.easeInOut'>
+						Circ.easeInOut
+					</option>
+					<option value='Back.easeIn'>
+						Back.easeIn
+					</option>
+					<option value='Back.easeOut'>
+						Back.easeOut
+					</option>
+					<option value='Back.easeInOut'>
+						Back.easeInOut
+					</option>
+					<option value='Elastic.easeIn'>
+						Elastic.easeIn
+					</option>
+					<option value='Elastic.easeOut'>
+						Elastic.easeOut
+					</option>
+					<option value='Elastic.easeInOut'>
+						Elastic.easeInOut
+					</option>
+					<option value='Bounce.easeIn'>
+						Bounce.easeIn
+					</option>
+					<option value='Bounce.easeOut'>
+						Bounce.easeOut
+					</option>
+					<option value='Bounce.easeInOut'>
+						Bounce.easeInOut
+					</option>
 				</select>
-			</div><input checked="checked" name='_radio' type='radio' value='play'> play <input name='_radio' type='radio' value='reverse'> reverse<br>
+			</div>
+			<input type="checkbox" id ='yoyo' value="yoyo">yoyo<br>
+			
+			<input checked="checked" name='_radio' type='radio' value='play'> play 
+			<input name='_radio' type='radio' value='reverse'> reverse
+			<input name='_radio' type='radio' value='restart'> restart
+			<input name='_radio' type='radio' value='invalidate'> invalidate
+			<br>
 			<input onclick="Remove()" type="button" value=" Remove "> <input onclick="allRemove()" type="button" value=" allRemove "><br>
 		</div>
-		<div id="logging"></div>
+		<div id="logging">
+		</div>
 	</div>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.4/TweenMax.min.js"></script>
+
+	<!--script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.1/TweenMax.min.js"-->
 	</script> 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js">
 	</script> 
 	<script src="https://code.jquery.com/jquery-3.0.0.min.js">
-	</script> 
-	<script src="jscolor.min.js">
 	</script> 
 	<script src="stats.min.js">
 	</script> 
