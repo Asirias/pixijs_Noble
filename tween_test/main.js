@@ -269,7 +269,8 @@ function Add() {
 		return;
 	}
 	
-		var anim = {
+		var anim = 
+		{
 		x: x ? x : 0,
 		y: y ? y : 0,
 		width: width ? width : undefined,
@@ -523,22 +524,39 @@ function PlayAnim() {
 	var pl = $('input[name=_radio]:checked').val();
 	if (pl == 'play') {
 	line = new TimelineMax();
-	for (var i = 0; i < anims.length; i++) {
-		line.to(sprite, times[i] /*実行秒*/ , anims[i] /*アニメ*/ );
-	}
 	var farststate = anims[0];
 	sprite.x = farststate.x;
 	sprite.y = farststate.y;
+	if(farststate.width < 1)
 	sprite.width = canvas.width;
+	else
+	sprite.width = farststate.width;
+
+	if(farststate.height < 1)
 	sprite.height = canvas.height;
+	else
+	sprite.height = farststate.height;
+
 	sprite.rotation = farststate.rotation;
+	
+	for (var i = 0; i < anims.length; i++) {
+		line.to(sprite, times[i] /*実行秒*/ , anims[i] /*アニメ*/ );
+	}
 	
 	var yo = $('#yoyo').prop("checked");
 	if(yo)line.yoyo(true);
 		line.eventCallback("onComplete", function() {
 			writeLog('onComplete');
-			sprite.width = canvas.width;
-			sprite.height = canvas.height;
+				if(farststate.width < 1)
+				sprite.width = canvas.width;
+				else
+				sprite.width = farststate.width;
+
+				if(farststate.height < 1)
+				sprite.height = canvas.height;
+				else
+				sprite.height = farststate.height;
+			
 			sprite.rotation = farststate.rotation;
 			zoomin(farststate.x,farststate.y,1.0);
 			oldmouseposx = sprite.x;
@@ -548,8 +566,15 @@ function PlayAnim() {
 	} else if(pl == 'reverse'){
 		line.eventCallback("onReverseComplete", function() {
 			writeLog('onReverseComplete');
-			sprite.width = canvas.width;
-			sprite.height = canvas.height;
+				if(farststate.width < 1)
+				sprite.width = canvas.width;
+				else
+				sprite.width = farststate.width;
+
+				if(farststate.height < 1)
+				sprite.height = canvas.height;
+				else
+				sprite.height = farststate.height;
 			sprite.rotation = farststate.rotation;
 			zoomin(farststate.x,farststate.y,1.0);
 			oldmouseposx = sprite.x;
