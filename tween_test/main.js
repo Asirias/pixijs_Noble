@@ -721,11 +721,12 @@ function capture() {
 	var imgUrl = renderer.view.toDataURL();
 	window.open(imgUrl);
 }
-
+var fps = 0;
 function enterFrameHandler() {
 	requestAnimationFrame(() => {
 		this.enterFrameHandler()
 	});
+	if(fps % 2 == 0){
 	if (stats) stats.update();
 	if (line.isActive()) {
 		var prog = line.progress();
@@ -735,6 +736,8 @@ function enterFrameHandler() {
 	}
 	//Render the stage
 	renderer.render(this.stage);
+	}
+	fps++;
 }
 
 function checkOrientation() {
