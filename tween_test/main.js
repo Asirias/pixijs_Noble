@@ -640,8 +640,8 @@ function zoomin(x, y, bairitu) {
 	if (sprite) {
 		sprite.scale.x *= bairitu;
 		sprite.scale.y *= bairitu;
-		sprite.x = x - canvas.width / 2;
-		sprite.y = y - canvas.height / 2;
+		sprite.x = x - sprite.width / 2;
+		sprite.y = y - sprite.height / 2;
 	}
 }
 
