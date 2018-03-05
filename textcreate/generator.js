@@ -45,6 +45,44 @@
 	function setcall(call) {
 		m_call = call;
 	}
+	function Release()
+	{
+		canvas = null;
+		buffer = null;
+		ctxa = null;
+		ctxb = null;
+		ctx = null;
+		fontHeight = null;
+		fontWidth = null;
+		fontFamily = null;
+		//テキスト
+		text = null;
+		mono = null;
+		outline  = null;
+		outlineOffsetX = null;
+		outlineOffsetY = null;
+		outlineWidth  = null;
+		shadow  = null;
+		shadowColor = null;
+		shadowBlur = null;
+		shadowOffsetX = null;
+		shadowOffsetY = null;
+		textColor  = null;
+		outlineColor = null;
+		scale = null;
+		ss = null;
+		bold = null;
+		italic = null;
+		grad = null;
+		endColor = null;
+		grid = null;
+		baselineOffset = null;
+		marginLeft = null;
+		marginTop = null;
+		background = null;
+		backgroundColor = null;
+		console.log("de");
+	}
 	//png
 	function createFonturl() {
 		var imgUrl = canvas.toDataURL("image/png");
@@ -89,20 +127,6 @@
 				render();
 			}
 		});
-	}
-
-	function showAlpha() {
-		ctx = ctxa;
-		var image = ctx.getImageData(0, 0, canvas.width, canvas.height),
-			data = image.data;
-		for (var i = 0; i < data.length; i += 4) {
-			var a = data[i + 3];
-			data[i] = a;
-			data[i + 1] = a;
-			data[i + 2] = a;
-			data[i + 3] = 255;
-		}
-		ctx.putImageData(image, 0, 0);
 	}
 
 	function render() {
@@ -225,6 +249,7 @@
 			ctx2.drawImage(buffer, 0, 0, canvas.width, canvas.height);
 		}
 		if (m_call) m_call();
+		Release();
 	}
 
 	function init() {
@@ -270,8 +295,11 @@
 		text = t;
 		viewtext = text;
 		opt();
-		showAlpha();
 		loadFont(fontFamily);
+
+	};
+	fontGenerator.prototype.create = function(max) {
+		
 	};
 	global.fontGenerator = fontGenerator;
 })(this);
