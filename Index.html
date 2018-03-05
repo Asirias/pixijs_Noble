@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebGL Text</title>
+</head>
+<body>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" name="viewport">
+	<meta content="ie=edge" http-equiv="X-UA-Compatible">
+	<script src="textutil.js">
+	</script> 
+	<script src="webfont.js">
+	</script> 
+	<script src="stats.min.js">
+	</script> 
+	<script src="generator.js">
+	</script>
+	<style type="text/css">
+	html,body {
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	background-color:#000;
+	color:#FFF;
+	margin:0;
+	padding:0;
+	}
+	canvas {
+	position:absolute;
+	top:0;
+	}
+	</style>
+	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+	<script>
+	   (function() {new fontGenerator("webfontを使用して、フォントをCanvasに描き、\nそれをテクスチャ化して表示した。\nPixi.jsとThree.jsの併合に比べ、\nやはりこちらの方が高速だ。\n" + "テクスチャのuvをずらす典型的なやり方ではあるが、\n描画部分がやはりThree.js等ライブラリ使用に比べ大変。\n" + "テキストを表示するだけであればPixi.jsの方が優秀だし、\n割と用途が限られるかもしてないが個人的には満足度90%だ。\n残りの10%は文字を良く見れば分かる。");})();
+	</script>
+</body>
+</html>
