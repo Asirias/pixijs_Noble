@@ -81,7 +81,6 @@
 		marginTop = null;
 		background = null;
 		backgroundColor = null;
-		console.log("de");
 	}
 	//png
 	function createFonturl() {
