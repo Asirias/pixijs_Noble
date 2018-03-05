@@ -15,7 +15,6 @@
 		fontFamily = 'Arvo', //'Baumans',/*https://fonts.google.com/*/
 		//テキスト
 		text = '',
-		viewtext = '',
 		mono = false, //等幅
 		outline = true, //アウトライン
 		outlineOffsetX = 0,
@@ -115,15 +114,25 @@
 		text = t.join('');
 	}
 
-	function loadFont(font) {
+	function loadFont(font,loaded) {
 		WebFont.load({
 			google: {
 				families: [font]
 			},
-			active: render,
-			inactive: function() {
-				console.log('inactive');
+			active: function() {
 				render();
+				loaded();
+				Release();
+			},
+			inactive: function() {
+				console.log('inactive(not support)');
+				render();
+				loaded();
+				Release();
+			},
+			fontinactive: function(fontFamily, fontDescription) {
+				console.log('Do Not have fontFamily');
+				Release();
 			}
 		});
 	}
@@ -246,59 +255,22 @@
 			var ctx2 = canvas.getContext('2d');
 			ctx2.clearRect(0, 0, canvas.width, canvas.height);
 			ctx2.drawImage(buffer, 0, 0, canvas.width, canvas.height);
-		}
-		if (m_call) m_call();
-		Release();
+		}		
 	}
 
-	function init() {
-		// WebGLコンテキストを設定
-		var canvas__ = document.getElementById('canvas');
-		canvas__.width = window.innerWidth;
-		canvas__.height = window.innerHeight;
-		var gl = canvas__.getContext('webgl') || canvas__.getContext('experimental-webgl');
-		var stats = new Stats();
-		stats.setMode(0);
-		document.body.appendChild(stats.domElement);
-		// WebGLコンテキストを設定
-		Font.init(gl);
-		var font = new Font(512); //引数:最大表示文字数(def:256)
-		// テクスチャを読み込み
-		var img = new Image();
-		img.onload = function() {
-			font.setTexture(img);
-			font.font = createFontRects();
-			glrender();
-		};
-		img.src = createFonturl();
-		var count = 0;
-		// テキスト描画
-		function glrender() {
-			requestAnimationFrame(glrender);
-			if (stats) stats.update();
-			gl.clearColor(0.0, 0.5, 0.5, 1.0);
-			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-			font.textAlign = 'left';
-			count++;
-			if (count <= viewtext.length) {
-				// テキストフィールドにデータを渡す処理
-				font.drawText(viewtext.substring(0, count), -canvas__.width / 2, canvas__.height / 2 - 42);
-			} else count = 0;
-			font.draw();
-			gl.flush();
-		}
-	}
 	//コンストラクタ
 	var fontGenerator = function(t) {
-		setcall(init);
 		text = t;
-		viewtext = text;
 		opt();
-		loadFont(fontFamily);
-
 	};
-	fontGenerator.prototype.create = function(max) {
-		
+	fontGenerator.prototype.create = function(init) {
+		loadFont(fontFamily,init);
+	};
+	fontGenerator.prototype.createRect = function() {
+		return createFontRects();
+	};
+	fontGenerator.prototype.createurl = function() {
+		return createFonturl();
 	};
 	global.fontGenerator = fontGenerator;
 })(this);

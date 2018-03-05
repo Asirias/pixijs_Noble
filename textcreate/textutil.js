@@ -153,11 +153,7 @@
 	Font.prototype.textAlign = function(a) {
 		this.textAlign = a;
 	}
-	Font.prototype.getBind = function() {
-		return this.bind;
-	}
-	
-	
+
 	/**
 	 * draw text
 	 */
@@ -182,7 +178,6 @@
 		for(var i = 0; i < text.length; i++) {
 			if(typeof text[i] === 'string') {
 				var uv = this.getCharacter(text[i].charCodeAt());
-				
 				if(uv) {
 					var vw = uv.vw * this.size[0],
 						vh = uv.vh * this.size[1],
