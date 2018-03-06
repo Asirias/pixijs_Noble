@@ -74,7 +74,7 @@
 		}
 		var vbo = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-		gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.DYNAMIC_DRAW);
+		gl.bufferData(gl.ARRAY_BUFFER, buffer, gl.STATIC_DRAW);//gl.DYNAMIC_DRAW
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 		
 		var ibo = gl.createBuffer();
@@ -122,7 +122,8 @@
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 		gl.generateMipmap(gl.TEXTURE_2D);
-		gl.bindTexture(gl.TEXTURE_2D, null);
+		
+		//gl.bindTexture(gl.TEXTURE_2D, null);
 	};
 	
 	Font.loadFont = function(name, cb) {
@@ -215,36 +216,46 @@
 		this.dirty = true;
 		return offsetX;
 	};
-	
+	var onr = false;
+	var onr0 = false;
 	/**
 	 * draw
 	 */
 	Font.prototype.draw = function() {
+		if(!onr0){
+			onr0 = true;
 		gl.enable(gl.BLEND);
-		//gl.blendEquation(gl.FUNC_ADD);
-		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
+		//gl.blendEquation(gl.FUNC_ADD);//デフォルトな為設定不要
+		//gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);//背景とブレンドされる
+		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);//通常の透過
 		
 		gl.useProgram(program);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+		}
 		if(this.dirty) {
 			gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.buffer.subarray(0, this.offset));
 			this.dirty = false;
 		}
 		//gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
+		//gl.bindTexture(gl.TEXTURE_2D, this.texture);
 		//gl.uniform1i(this.uniforms[0], 0);
+		if(!onr){
+			onr = true;
 		let w = gl.canvas.width * 0.5,
 			h = gl.canvas.height * 0.5;
 		gl.uniform2f(this.uniforms[1], w, h);
+		
 		gl.enableVertexAttribArray(this.attributes[0]);
 		gl.enableVertexAttribArray(this.attributes[1]);
 		gl.enableVertexAttribArray(this.attributes[2]);
+		
 		let size = Float32Array.BYTES_PER_ELEMENT,
 			stride = 9 * size;
 		gl.vertexAttribPointer(this.attributes[0], 3, gl.FLOAT, false, stride, 0);
 		gl.vertexAttribPointer(this.attributes[1], 2, gl.FLOAT, false, stride, 3 * size);
 		gl.vertexAttribPointer(this.attributes[2], 4, gl.FLOAT, false, stride, 5 * size);
+		}
 		gl.drawElements(gl.TRIANGLES, this.count * 6, gl.UNSIGNED_SHORT, 0);
 	};
 	

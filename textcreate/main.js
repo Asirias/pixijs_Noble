@@ -10,9 +10,7 @@
 		var renderer, scene, camera;
 		var canvas3d = document.getElementById('canvas3d');
 		var meshs;
-		var renderer2d, scene2d, camera2d;
-		var texture;
-		var csprite;
+
 		(function init3D() {
 			canvas3d.width = WIDTH;
 			canvas3d.height = HEIGHT;
@@ -54,22 +52,7 @@
 			meshs = new THREE.Mesh(geometry, material);
 			scene.add(meshs);
 		})();
-		(function init2D() {
-			camera2d = new THREE.OrthographicCamera(WIDTH / -2, WIDTH / 2, WIDTH / 2, WIDTH / -2, 0, 256);
-			scene2d = new THREE.Scene();
-			var loader = new THREE.TextureLoader();
-			texture = loader.load('beath.jpg');
-			//材質オブジェクトの宣言と生成
-			var material = new THREE.SpriteMaterial({
-				map: texture,
-				color: 0xFFFFFF
-			});
-			//スプライトオブジェクトの生成
-			csprite = new THREE.Sprite(material);
-			csprite.scale.set(WIDTH / 4, WIDTH / 4, 1);
-			scene2d.add(csprite);
-			texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-		})();
+
 		// WebGLコンテキストを設定
 		var canvas = document.getElementById('canvas');
 		canvas.width = WIDTH;
@@ -96,7 +79,7 @@
 		document.body.appendChild(stats.domElement);
 		// WebGLコンテキストを設定
 		Font.init(gl);
-		var font = new Font(512); //引数:最大表示文字数(def:256)
+		var font = new Font(256); //引数:最大表示文字数(def:256)
 		// テクスチャを読み込み
 		var img = new Image();
 		img.onload = function() {
@@ -121,16 +104,16 @@
 					count = 0;
 				}
 				// テキストフィールドにデータを渡す処理
-				font.drawText(viewtext.substring(0, count), -canvas.width / 2, canvas.height / 2 - 42);
+				font.drawText(viewtext.substring(0, count), -canvas.width / 2, canvas.height / 2 - 42*Math.sin(count),[1, 1, 1, 1]);
+				
 			}
 			font.draw();
+			
+			
 			gl.flush();
 			meshs.rotation.x += Math.PI / 180;
 			meshs.rotation.y += Math.PI / 180;
 			renderer.render(scene, camera);
-			texture.offset.x += 0.005;
-			texture.offset.y += 0.005;
-			renderer.render(scene2d, camera2d);
 		}
 	}
 })();
