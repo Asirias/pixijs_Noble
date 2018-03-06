@@ -12,7 +12,7 @@
 	buffer.height = canvas.height * 2;
 	var fontHeight = 40,
 		fontWidth = 26,
-		fontFamily = 'Arvo', //'Baumans',/*https://fonts.google.com/*/
+		fontFamily = 'Arvo', //'Baumans',https://fonts.google.com/
 		//テキスト
 		text = '',
 		mono = false, //等幅
@@ -36,9 +36,7 @@
 		grid = false,
 		baselineOffset = 0,
 		marginLeft = 0,
-		marginTop = 0,
-		background = false,
-		backgroundColor = '#000000';
+		marginTop = 0;
 	var fontRects = [];
 
 	function setcall(call) {
@@ -78,12 +76,10 @@
 		baselineOffset = null;
 		marginLeft = null;
 		marginTop = null;
-		background = null;
-		backgroundColor = null;
 	}
 	//png
 	function createFonturl() {
-		var imgUrl = canvas.toDataURL("image/png");
+		var imgUrl = canvas.toDataURL();
 		return imgUrl;
 	}
 	//json data
@@ -143,12 +139,9 @@
 		if (ss) {
 			ctx.scale(2.0, 2.0);
 		}
-		if (background) {
-			ctx.fillStyle = backgroundColor;
-			ctx.fillRect(0, 0, canvas.width, canvas.height);
-		} else {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-		}
+		
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		
 		var w = 0;
 		if (outline) {
 			w = outlineWidth;
@@ -231,6 +224,10 @@
 				w: size.w / canvas.width,
 				h: (fontH + w) / canvas.height
 			};
+			//テ j
+			if(c == 'テ'){size.h += 3;uv.h -= 0.008;}
+			else if(c == 'j'){uv.h += 0.01;uv.y -= 0.01;}
+			
 			if (grid) {
 				ctx.save();
 				ctx.fillStyle = (row & 1) ^ (col & 1) ? '#0F0' : '#F0F';

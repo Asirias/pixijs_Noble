@@ -167,19 +167,19 @@
 			text = '' + text;
 		}
 		color = color || [1, 1, 1, 1];
-		var offsetX = 0,
+		let offsetX = 0,
 			offsetY = 0;
 		
 		if(this.textAlign === 'center') {
 			offsetX -= this.getTextWidth(text) * this.size[0] * 0.5;
 		}
-		var offset = this.offset,
+		let offset = this.offset,
 			buffer = this.buffer;
-		for(var i = 0; i < text.length; i++) {
+		for(let i = 0; i < text.length; i++) {
 			if(typeof text[i] === 'string') {
-				var uv = this.getCharacter(text[i].charCodeAt());
+				let uv = this.getCharacter(text[i].charCodeAt());
 				if(uv) {
-					var vw = uv.vw * this.size[0],
+					let vw = uv.vw * this.size[0],
 						vh = uv.vh * this.size[1],
 						vx = [x, x, x + vw, x + vw],
 						vy = [y + vh, y, y, y + vh],
@@ -194,7 +194,7 @@
 							offsetX = -uv.vw;
 					}
 					
-					for(var j = 0; j < 4; j++) {
+					for(let j = 0; j < 4; j++) {
 						buffer[offset + 0] = vx[j] + offsetX;
 						buffer[offset + 1] = vy[j] + offsetY;
 						buffer[offset + 2] = 0;
@@ -221,8 +221,8 @@
 	 */
 	Font.prototype.draw = function() {
 		gl.enable(gl.BLEND);
-		gl.blendEquation(gl.FUNC_ADD);
-		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE);
+		//gl.blendEquation(gl.FUNC_ADD);
+		gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
 		
 		gl.useProgram(program);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
@@ -231,16 +231,16 @@
 			gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.buffer.subarray(0, this.offset));
 			this.dirty = false;
 		}
-		gl.activeTexture(gl.TEXTURE0);
+		//gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
-		gl.uniform1i(this.uniforms[0], 0);
-		var w = gl.canvas.width * 0.5,
+		//gl.uniform1i(this.uniforms[0], 0);
+		let w = gl.canvas.width * 0.5,
 			h = gl.canvas.height * 0.5;
 		gl.uniform2f(this.uniforms[1], w, h);
 		gl.enableVertexAttribArray(this.attributes[0]);
 		gl.enableVertexAttribArray(this.attributes[1]);
 		gl.enableVertexAttribArray(this.attributes[2]);
-		var size = Float32Array.BYTES_PER_ELEMENT,
+		let size = Float32Array.BYTES_PER_ELEMENT,
 			stride = 9 * size;
 		gl.vertexAttribPointer(this.attributes[0], 3, gl.FLOAT, false, stride, 0);
 		gl.vertexAttribPointer(this.attributes[1], 2, gl.FLOAT, false, stride, 3 * size);
