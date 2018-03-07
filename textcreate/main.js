@@ -1,9 +1,8 @@
 (function() {
 	var viewtext = "webfontを使用して、フォントをCanvasに描き、\nそれをテクスチャ化して表示した。\nPixi.jsとThree.jsの併合に比べ、\nやはりこちらの方が高速だ。\n" + "テクスチャのuvをずらす典型的なやり方ではあるが、\n描画部分がやはりThree.js等ライブラリ使用に比べ大変。\n" + "テキストを表示するだけであればPixi.jsの方が優秀だし、\n割と用途が限られるかもしてないが個人的には満足度90%だ。\n残りの10%は文字を良く見れば分かる。";
-	var f = new fontGenerator(viewtext);
-	f.create(init);
-
-	function init() {
+	
+	var fontgen = new fontGenerator(viewtext);
+	fontgen.create(function(){
 		var WIDTH = window.innerWidth;
 		var HEIGHT = window.innerHeight;
 		var light;
@@ -74,29 +73,51 @@
 			antialias: false,
 			depth: false
 		});
+		
+		
 		var stats = new Stats();
 		stats.setMode(0);
 		document.body.appendChild(stats.domElement);
 		// WebGLコンテキストを設定
-		Font.init(gl);
-		var font = new Font(256); //引数:最大表示文字数(def:256)
+		
+		var texture2d = new Texture2d(gl); 
+
+		texture2d.createTextbuffer(256);//引数:最大表示文字数(def:256)
+
+		var tex = null;
+		var tex2 = null;
 		// テクスチャを読み込み
 		var img = new Image();
-		img.onload = function() {
-			font.setTexture(img);
-			font.font = f.createRect();
+		img.src = 'beath.jpg';
+		var img2 = new Image();
+		img2.src = 'mesframe14_blue.png';
+		
+		var font = new Image();
+		font.src = fontgen.createurl();
+		
+		texture2d.LoadManager([img,img2,font],function(){
+			texture2d.setFontTexture(font);
+			texture2d.font = fontgen.createRect();
+			tex = texture2d.setTexture(img);
+			tex.y = -canvas.height / 2;
+			tex2 = texture2d.setTexture(img2);
+			tex2.x = -canvas.width / 2;
 			glrender();
-		};
-		img.src = f.createurl();
+		});
+		
 		var count = 0;
 		var test = 0;
+
 		// テキスト描画
 		function glrender() {
 			requestAnimationFrame(glrender);
 			if (stats) stats.update();
 			gl.clearColor(0.0, 0.0, 0.0, 0.0);
 			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-			font.textAlign = 'left';
+			texture2d.drawTexture(tex);
+			texture2d.drawTexture(tex2);
+
+			texture2d.textAlign = 'left';
 			test++;
 			if (test % 4 == 0) {
 				count++;
@@ -104,10 +125,11 @@
 					count = 0;
 				}
 				// テキストフィールドにデータを渡す処理
-				font.drawText(viewtext.substring(0, count), -canvas.width / 2, canvas.height / 2 - 42*Math.sin(count),[1, 1, 1, 1]);
+				texture2d.drawText(viewtext.substring(0, count), -canvas.width / 2, canvas.height / 2 - 42,[1, 1, 1, 1]);
 				
 			}
-			font.draw();
+
+			texture2d.fontDraw();
 			
 			
 			gl.flush();
@@ -115,5 +137,6 @@
 			meshs.rotation.y += Math.PI / 180;
 			renderer.render(scene, camera);
 		}
-	}
+		
+		});
 })();
