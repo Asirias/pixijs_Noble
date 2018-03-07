@@ -617,17 +617,8 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 	};
 	Texture2d.prototype.fontDraw = function() {
-			var moffset = 0;
-			for(let j = 0; j < 4; j++) {
-			mbuffer[moffset + 0] = 0;//X
-			mbuffer[moffset + 1] = 0;//Y
-			mbuffer[moffset + 2] = 0;//U
-			mbuffer[moffset + 3] = 0;//V
-			mbuffer[moffset + 4] = 0;//R
-			mbuffer[moffset + 5] = 0;//B
-			mbuffer[moffset + 6] = 0;//G
-			mbuffer[moffset + 7] = 0;//a
-			moffset += 8;
+			for(let j = 0; j < mbuffer.length; j++) {
+			mbuffer[j] = 0;
 		}
 		gl.bufferSubData(gl.ARRAY_BUFFER, 0, mbuffer);
 
