@@ -31,7 +31,6 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 })(this,document);
 (function(global) {
 	'use strict';
-	var m_call;
 	var canvas = document.createElement('canvas'),
 		buffer = document.createElement('canvas'),
 		ctxa = canvas.getContext('2d'),
@@ -70,44 +69,6 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		marginTop = 0;
 	var fontRects = [];
 
-	function setcall(call) {
-		m_call = call;
-	}
-	function Release()
-	{
-		canvas = null;
-		buffer = null;
-		ctxa = null;
-		ctxb = null;
-		ctx = null;
-		fontHeight = null;
-		fontWidth = null;
-		fontFamily = null;
-		//テキスト
-		text = null;
-		mono = null;
-		outline  = null;
-		outlineOffsetX = null;
-		outlineOffsetY = null;
-		outlineWidth  = null;
-		shadow  = null;
-		shadowColor = null;
-		shadowBlur = null;
-		shadowOffsetX = null;
-		shadowOffsetY = null;
-		textColor  = null;
-		outlineColor = null;
-		scale = null;
-		ss = null;
-		bold = null;
-		italic = null;
-		grad = null;
-		endColor = null;
-		grid = null;
-		baselineOffset = null;
-		marginLeft = null;
-		marginTop = null;
-	}
 	//png
 	function createFonturl() {
 		var imgUrl = canvas.toDataURL();
@@ -128,6 +89,7 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 			f.vh = -fontRects[i][8];
 			ff[fontRects[i][0]] = f;
 		}
+
 		return ff;
 	}
 
@@ -149,17 +111,14 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 			active: function() {
 				render();
 				loaded();
-				Release();
 			},
 			inactive: function() {
 				console.log('inactive(not support)');
 				render();
 				loaded();
-				Release();
 			},
 			fontinactive: function(fontFamily, fontDescription) {
 				console.log('Do Not have fontFamily');
-				Release();
 			}
 		});
 	}
@@ -338,8 +297,8 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		"v_color = max(color, 0.0);\n" +
 		"gl_Position = vec4(position / screen, 0.0, 1.0);\n" +
 		"}";
-	var one = false;
-	var mbuffer = new Float32Array(8 * 4);
+
+	var mbuffer;
 	function getShader(src, kind) {
 		var s = gl.createShader(kind);
 		gl.shaderSource(s, src);
@@ -371,13 +330,24 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		this.context = gl;
 		this.offset = 0;
 		this.count = 0;
-		this.dirty = true;
+		this.texcount = 0;
+		this.moffset = 0;
 		this.size = [1, 1];
 		this.textAlign = 'left';
 		this.font = null;
 		this.texture = null;
+		mbuffer = new Float32Array(8 * 4);
 	};
 
+	Texture2d.prototype.addTexturebuffer = function(max) {
+		const size = max * 8 * 4;
+		var mbuffer_new = new Float32Array(size);
+		for(var i = 0;i < mbuffer.length;i++){
+			if(size > i)
+			mbuffer_new[i] = mbuffer[i];
+		}
+		mbuffer = mbuffer_new;
+	};
 	Texture2d.prototype.createTextbuffer = function(maxStrLength) {
 		var buffer = new Float32Array(maxStrLength * 8 * 4),
 			indexStream = new Uint16Array(maxStrLength * 6),
@@ -505,10 +475,7 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 	 */
 	Texture2d.prototype.drawText = function(text, x, y, color) {
 
-		if(!this.dirty) {
-			this.count = 0;
-			this.offset = 0;
-		}
+		
 		if(typeof text !== 'string') {
 			text = '' + text;
 		}
@@ -557,32 +524,10 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		}
 		this.count += text.length;
 		this.offset = offset;
-		this.dirty = true;
 		return offsetX;
 	};
-	Texture2d.prototype.drawTexture = function(texdata) {
-		var moffset = 0;
-		var color = texdata.color || [1, 1, 1, 1];
-		let vw = texdata.width,
-			vh = texdata.height,
-			x = texdata.x,
-			y = texdata.y,
-			vx = [x, x, x + vw, x + vw],
-			vy = [y + vh, y, y, y + vh],
-			u = [0, 0, 1, 1],
-			v = [1, 0, 0, 1];
-		for(let j = 0; j < 4; j++) {
-			mbuffer[moffset + 0] = vx[j];//X
-			mbuffer[moffset + 1] = vy[j];//Y
-			mbuffer[moffset + 2] = u[j];//U
-			mbuffer[moffset + 3] = v[j];//V
-			mbuffer[moffset + 4] = color[0];//R
-			mbuffer[moffset + 5] = color[1];//B
-			mbuffer[moffset + 6] = color[2];//G
-			mbuffer[moffset + 7] = color[3];//a
-			moffset += 8;
-		}
-		if(!one){
+	Texture2d.prototype.draw_opset = function(pivot_x,pivot_y) {
+		
 		gl.enable(gl.BLEND);
 		gl.blendEquation(gl.FUNC_ADD);//デフォルトな為設定不要
 		
@@ -592,16 +537,11 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		gl.useProgram(program);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
-		}
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, mbuffer);
-		
-		gl.activeTexture(gl.TEXTURE0);
-		gl.bindTexture(gl.TEXTURE_2D, texdata.tex);
-		if(!one){
+
 		gl.uniform1i(this.uniforms[0], 0);
-		let w = gl.canvas.width * 0.5,
-			h = gl.canvas.height * 0.5;
-		gl.uniform2f(this.uniforms[1], w, h);
+		pivot_x = pivot_x || gl.canvas.width * 0.5;
+		pivot_y = pivot_y || gl.canvas.height * 0.5;
+		gl.uniform2f(this.uniforms[1], pivot_x, pivot_y);
 
 		gl.enableVertexAttribArray(this.attributes[0]);
 		gl.enableVertexAttribArray(this.attributes[1]);
@@ -612,25 +552,46 @@ $.prototype.v=function(a,b){var c=this.d.id,d=this.c.u,e=this;c?(d.__webfontfont
 		gl.vertexAttribPointer(this.attributes[0], 2, gl.FLOAT, false, stride, 0);
 		gl.vertexAttribPointer(this.attributes[1], 2, gl.FLOAT, false, stride, 2 * size);
 		gl.vertexAttribPointer(this.attributes[2], 4, gl.FLOAT, false, stride, 4 * size);
-		one = true;
+		
+	};
+	Texture2d.prototype.updateTexture = function(texdata) {
+		var color = texdata.color || [1, 1, 1, 1];
+		let vw = texdata.width,
+			vh = texdata.height,
+			x = texdata.x,
+			y = texdata.y,
+			vx = [x, x, x + vw, x + vw],
+			vy = [y + vh, y, y, y + vh],
+			u = [0, 0, 1, 1],
+			v = [1, 0, 0, 1];
+		for(let j = 0; j < 4; j++) {
+			mbuffer[this.moffset + 0] = vx[j];//X
+			mbuffer[this.moffset + 1] = vy[j];//Y
+			mbuffer[this.moffset + 2] = u[j];//U
+			mbuffer[this.moffset + 3] = v[j];//V
+			mbuffer[this.moffset + 4] = color[0];//R
+			mbuffer[this.moffset + 5] = color[1];//B
+			mbuffer[this.moffset + 6] = color[2];//G
+			mbuffer[this.moffset + 7] = color[3];//a
+			this.moffset += 8;
 		}
-		gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+		this.texcount++;
+	};
+	Texture2d.prototype.drawTexture = function(texdata) {
+		gl.bufferSubData(gl.ARRAY_BUFFER, 0, mbuffer.subarray(0, this.moffset));
+		gl.activeTexture(gl.TEXTURE0);
+		gl.bindTexture(gl.TEXTURE_2D, texdata.tex);
+		gl.drawElements(gl.TRIANGLES, this.texcount * 6, gl.UNSIGNED_SHORT, 0);
+		this.texcount = 0;
+		this.moffset = 0;
 	};
 	Texture2d.prototype.fontDraw = function() {
-			for(let j = 0; j < mbuffer.length; j++) {
-			mbuffer[j] = 0;
-		}
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, mbuffer);
-
-		if(this.dirty) {
-			gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.buffer.subarray(0, this.offset));
-			this.dirty = false;
-		}
-
+		gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.buffer.subarray(0, this.offset));
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, this.texture);
-		
 		gl.drawElements(gl.TRIANGLES, this.count * 6, gl.UNSIGNED_SHORT, 0);
+		this.count = 0;
+		this.offset = 0;
 	};
 	
 	global.Texture2d = Texture2d;
