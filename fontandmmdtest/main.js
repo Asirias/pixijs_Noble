@@ -54,7 +54,7 @@
 					texloaded = false;
 					modelloaded = false;
 					soundload();
-					//fullscreen(canvas);
+					fullscreen(canvas);
 					html_text.innerHTML = '';
 					document.body.appendChild(stats.domElement);
 					window.requestAnimationFrame(glrender);
@@ -120,7 +120,7 @@
 				sound.setVolume(1);
 				setTimeout(function() {
 					sound.play();
-				}, 3780);
+				}, 5333);
 			});
 		}
 		// WebGLコンテキストを設定
