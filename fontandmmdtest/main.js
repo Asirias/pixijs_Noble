@@ -27,6 +27,8 @@
 			renderer.setSize(WIDTH, HEIGHT);
 			renderer.setClearColor(0x000000, 1);
 			renderer.autoClear = false;
+			renderer.autoClearDepth = false;
+			renderer.autoClearStencil = false;
 			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
 			camera.position.z = 30;
 			effect = new THREE.OutlineEffect(renderer);
