@@ -29,6 +29,8 @@
 			renderer.autoClear = false;
 			renderer.autoClearDepth = false;
 			renderer.autoClearStencil = false;
+
+			
 			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
 			camera.position.z = 30;
 			effect = new THREE.OutlineEffect(renderer);
@@ -53,6 +55,7 @@
 			};
 			document.addEventListener('click', function() {
 				if (texloaded && modelloaded) {
+					//fullscreen(document.getElementById('content'));
 					texloaded = false;
 					modelloaded = false;
 					soundload();
@@ -61,6 +64,8 @@
 					window.requestAnimationFrame(glrender);
 				}
 			});
+			
+			
 			var modelFile = 'MMD_/Alicia_solid.pmx';
 			var vmdFiles = ['mmd/vmds/wavefile_v2.vmd'];
 			helper = new THREE.MMDHelper();
@@ -121,7 +126,7 @@
 				sound.setVolume(1);
 				setTimeout(function() {
 					sound.play();
-				}, 5333);
+				}, 3780);
 			});
 		}
 		// WebGLコンテキストを設定
@@ -136,6 +141,7 @@
 			effect.setSize(window.innerWidth, window.innerHeight);
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
+			texture2d.draw_opset();
 		}
 		canvas.width = WIDTH;
 		canvas.height = HEIGHT;
