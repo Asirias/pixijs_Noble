@@ -56,7 +56,6 @@
 					texloaded = false;
 					modelloaded = false;
 					soundload();
-					fullscreen(canvas);
 					html_text.innerHTML = '';
 					document.body.appendChild(stats.domElement);
 					window.requestAnimationFrame(glrender);
